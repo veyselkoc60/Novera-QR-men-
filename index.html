@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NOVERA — Coffee & Dessert</title>
+<!-- Poppins Font Ailesi (Tüm ağırlıklar) -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+:root {
+  --accent: #1a3d2b; --accent-rgb: 26, 61, 43;
+  --cream: #faf7f2; --surface: #ffffff;
+  --ink: #1a1208; --ink-light: #7a6450;
+  --warm: #c4956a;
+  --border: rgba(26, 18, 8, 0.08);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+body { 
+  font-family: 'Poppins', sans-serif; 
+  background: var(--cream); 
+  color: var(--ink); 
+  overflow-x: hidden;
+}
+
+/* ── KAYAR ARKAPLAN OBJELERİ (Pinterest Estetiği) ── */
+.floating-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: 0.04;
+}
+
+/* ── HERO ALANI (Küçültüldü ve Modernize Edildi) ── */
+.hero {
+  position: relative;
+  height: 200px; /* Boyu kısaltıldı */
+  background: var(--accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+}
+.hero-content { position: relative; z-index: 10; padding: 0 20px; }
+.hero-logo-wrap { width: 140px; margin-bottom: 8px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); }
+.hero-sub {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.4em;
+  text-transform: uppercase; color: rgba(255,255,255,0.7);
+}
+
+/* ── STICKY NAV (Animasyonlu Kayar Kategoriler) ── */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(250, 247, 242, 0.85);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto; scrollbar-width: none;
+}
+.sticky-nav::-webkit-scrollbar { display: none; }
+.nav-pill {
+  flex-shrink: 0; padding: 8px 20px; margin: 0 6px;
+  border-radius: 40px; font-size: 12px; font-weight: 600;
+  color: var(--ink-light); cursor: pointer; transition: all 0.4s var(--ease);
+  border: 1px solid transparent;
+}
+.nav-pill.active {
+  background: var(--accent); color: white;
+  box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+}
+
+/* ── ÜRÜN KARTLARI (Net Poppins ve Okunabilirlik) ── */
+.item-card {
+  background: var(--surface); border-radius: 24px;
+  margin: 12px; padding: 12px;
+  display: flex; gap: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  opacity: 0; transform: translateY(20px); transition: all 0.6s var(--ease);
+}
+.item-card.visible { opacity: 1; transform: translateY(0); }
+
+.item-img {
+  width: 90px; height: 90px; border-radius: 18px;
+  object-fit: cover; background: var(--cream);
+}
+.item-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.item-name { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.item-desc { font-size: 11px; font-weight: 400; color: var(--ink-light); line-height: 1.5; margin-bottom: 8px; }
+
+/* ── BOYUT SEÇENEKLERİ (Yeni) ── */
+.size-chips { display: flex; gap: 6px; }
+.size-chip {
+  font-size: 9px; font-weight: 700; padding: 4px 10px;
+  background: var(--cream); border-radius: 12px;
+  color: var(--accent); border: 1px solid rgba(var(--accent-rgb), 0.1);
+}
+.size-chip span { font-weight: 400; opacity: 0.7; margin-left: 3px; }
+
+/* ── DEĞERLENDİRME (Animasyonlu ve Estetik) ── */
+.review-card {
+  background: var(--surface); border-radius: 28px;
+  padding: 24px; margin: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  animation: slideIn 0.8s var(--ease);
+}
+@keyframes slideIn { from { opacity: 0; transform: scale(0.95) translateY(30px); } }
+
+.star-btn {
+  font-size: 32px; transition: transform 0.3s var(--ease);
+}
+.star-btn:active { transform: scale(1.4); }
+
+/* ── FOOTER ── */
+.footer-logo-text {
+  font-weight: 800; letter-spacing: 0.2em; color: #000 !important; /* Gri değil Siyah */
+  text-transform: uppercase; font-size: 18px; margin-top: 10px;
+}
+
+.page { display: none; animation: fadeIn 0.5s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div class="floating-bg" id="bg-assets"></div>
+
+<!-- MENU VIEW -->
+<div id="menu-view" class="page active">
+  <div class="hero">
+    <canvas id="hero-canvas" style="position:absolute; inset:0;"></canvas>
+    <div class="hero-content">
+      <div class="hero-logo-wrap">
+        <!-- Mevcut SVG logonuz buraya -->
+        <svg viewBox="0 0 300 90">...</svg> 
+      </div>
+      <div class="hero-sub">Specialty Coffee & Kitchen</div>
+    </div>
+  </div>
+
+  <nav class="sticky-nav" id="cat-nav"></nav>
+
+  <div id="menu-body" style="padding-bottom: 80px;"></div>
+
+  <div style="text-align:center; padding: 40px 20px;">
+    <div class="footer-logo-text">NOVERA</div>
+    <p style="font-size: 10px; color: var(--ink-light); margin-top: 5px;">Çayırova / Kocaeli</p>
+    <button class="review-cta" onclick="showPage('review')" style="margin-top:20px; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:30px; font-weight:600; font-size:12px;">
+      DENEYİMİNİ PUANLA
+    </button>
+  </div>
+</div>
+
+<!-- REVIEW VIEW -->
+<div id="review-view" class="page">
+  <div class="hero" style="height: 150px;">
+    <button onclick="showPage('menu')" style="position:absolute; left:20px; top:20px; background:none; border:none; color:white;"><span class="material-icons-round">arrow_back_ios</span></button>
+    <div class="hero-sub">BİZE FİKİR VER</div>
+    <h2 style="color:white; font-weight:700;">Değerlendirme</h2>
+  </div>
+
+  <div class="review-card">
+    <p style="text-align:center; font-size:13px; font-weight:500; margin-bottom:15px;">Kahve deneyiminiz nasıldı?</p>
+    <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
+       <!-- Yıldızlar script ile dolacak -->
+       <div id="star-rating" style="display:flex; gap:8px;"></div>
+    </div>
+    <textarea placeholder="Görüşlerinizi buraya yazabilirsiniz..." style="width:100%; border:1px solid var(--border); border-radius:15px; padding:15px; font-family:'Poppins'; font-size:13px; min-height:100px; outline:none; background:var(--cream);"></textarea>
+    <button onclick="submitReview()" style="width:100%; margin-top:15px; background:var(--accent); color:white; border:none; height:50px; border-radius:15px; font-weight:700; letter-spacing:1px;">GÖNDER</button>
+  </div>
+</div>
+
+<script>
+// Pinterest Estetiği Arkaplan Obje Kaydırma
+const assets = ['☕', '🌿', '✨', '🤎', '🥐'];
+const bg = document.getElementById('bg-assets');
+for(let i=0; i<15; i++) {
+  const div = document.createElement('div');
+  div.innerText = assets[Math.floor(Math.random()*assets.length)];
+  div.style.position = 'absolute';
+  div.style.left = Math.random()*100 + '%';
+  div.style.top = Math.random()*100 + '%';
+  div.style.fontSize = (Math.random()*20 + 20) + 'px';
+  bg.appendChild(div);
+}
+
+// Boyutlu Fiyat Mantığı ve Admin Entegrasyonu için Data Yapısı Güncellemesi
+// Admin panelinde "it.sizes" objesini kontrol edip küçük/orta/büyük fiyatlarını ekliyoruz.
+
+function renderMenu() {
+  const body = document.getElementById('menu-body');
+  body.innerHTML = D.categories.map(cat => {
+    const items = D.items[cat.id] || [];
+    return `
+      <div class="section-title" style="padding: 25px 20px 10px; font-weight:800; font-size:18px; letter-spacing:-0.5px;">${cat.name}</div>
+      ${items.map(it => `
+        <div class="item-card visible">
+          <img src="${it.img || 'https://via.placeholder.com/150'}" class="item-img">
+          <div class="item-info">
+            <div class="item-name">${it.name}</div>
+            <div class="item-desc">${it.desc || ''}</div>
+            <div class="size-chips">
+              ${it.sizes?.S?.on ? `<div class="size-chip">K <span>${it.sizes.S.price}₺</span></div>` : ''}
+              ${it.sizes?.M?.on ? `<div class="size-chip">O <span>${it.sizes.M.price}₺</span></div>` : ''}
+              ${it.sizes?.L?.on ? `<div class="size-chip">B <span>${it.sizes.L.price}₺</span></div>` : ''}
+              ${(!it.sizes?.S?.on && !it.sizes?.M?.on && !it.sizes?.L?.on) ? `<div style="font-weight:700; color:var(--accent)">${it.price}₺</div>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    `;
+  }).join('');
+}
+
+// Sayfa Geçiş Animasyonu
+function showPage(p) {
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(pg => pg.style.display = 'none');
+  const activePage = document.getElementById(p + '-view');
+  activePage.style.display = 'block';
+  activePage.style.animation = 'fadeIn 0.6s var(--ease)';
+}
+
+// Yıldızları oluştur
+const starContainer = document.getElementById('star-rating');
+for(let i=1; i<=5; i++) {
+  const s = document.createElement('span');
+  s.className = 'material-icons-round star-btn';
+  s.innerText = 'star_outline';
+  s.style.color = '#ddd';
+  s.onclick = function() {
+    highlightStars(i);
+  };
+  starContainer.appendChild(s);
+}
+
+function highlightStars(count) {
+  const stars = document.querySelectorAll('.star-btn');
+  stars.forEach((s, idx) => {
+    if(idx < count) {
+      s.innerText = 'star';
+      s.style.color = '#FFB800';
+      s.style.transform = 'scale(1.2)';
+    } else {
+      s.innerText = 'star_outline';
+      s.style.color = '#ddd';
+      s.style.transform = 'scale(1)';
+    }
+  });
+}
+
+// İlk render
+renderMenu();
+</script>
+</body>
+</html>
