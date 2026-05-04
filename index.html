@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NOVERA — Coffee & Dessert</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+:root {
+  --accent: #1a3d2b; --cream: #faf7f2; --surface: #ffffff;
+  --ink: #000000; --ink-light: #554433;
+  --border: rgba(0,0,0,0.08); --ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Poppins', sans-serif; background: var(--cream); color: var(--ink); }
+
+/* ── LOGO BİLEŞENİ (SVG) ── */
+.novera-logo { display: inline-block; }
+.novera-logo svg { width: 100%; height: auto; display: block; }
+.logo-white { filter: brightness(0) invert(1); } /* Koyu zeminde beyaz logo */
+.logo-black { filter: brightness(0); } /* Açık zeminde siyah logo */
+
+/* ── HERO ── */
+.hero {
+  height: 160px; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.hero-logo-wrap { width: 160px; z-index: 10; transform: translateY(5px); }
+
+/* ── KATEGORİ NAV (Akışkan) ── */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(250, 247, 242, 0.85); backdrop-filter: blur(20px);
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto; scrollbar-width: none;
+}
+.sticky-nav::-webkit-scrollbar { display: none; }
+.nav-pill {
+  flex-shrink: 0; padding: 8px 22px; margin: 0 6px;
+  border-radius: 40px; font-size: 13px; font-weight: 600;
+  color: var(--ink-light); cursor: pointer; transition: 0.4s var(--ease);
+}
+.nav-pill.active { background: var(--accent); color: white; }
+
+/* ── ÜRÜN KARTLARI ── */
+.item-card {
+  background: var(--surface); border-radius: 24px; margin: 12px; padding: 12px;
+  display: flex; gap: 16px; border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+.item-img { width: 90px; height: 90px; border-radius: 18px; object-fit: cover; background: #f2f2f2; }
+.item-name { font-size: 16px; font-weight: 700; color: #000; }
+.item-desc { font-size: 11px; color: var(--ink-light); line-height: 1.5; margin: 4px 0 8px; font-weight: 400; }
+
+/* Boyut Çipleri */
+.size-row { display: flex; gap: 6px; }
+.size-chip {
+  background: var(--cream); padding: 4px 10px; border-radius: 10px;
+  font-size: 10px; font-weight: 700; color: var(--accent); border: 1px solid rgba(26,61,43,0.1);
+}
+
+/* ── ADMIN PANELİ TASARIMI ── */
+.a-layout { display: flex; min-height: 100vh; background: #fff; }
+.a-sidebar { width: 260px; border-right: 1px solid #eee; padding: 25px 0; display: flex; flex-direction: column; }
+.a-sidebar-logo { width: 100px; padding: 0 25px 30px; }
+.asb-btn {
+  padding: 12px 25px; border: none; background: none; font-family: 'Poppins';
+  font-size: 14px; text-align: left; cursor: pointer; color: #777; transition: 0.3s;
+  display: flex; align-items: center; gap: 12px;
+}
+.asb-btn.active { color: var(--accent); background: #f0f7f3; font-weight: 600; border-left: 4px solid var(--accent); }
+
+.a-main { flex: 1; padding: 40px; background: #fafafa; overflow-y: auto; }
+.a-panel { display: none; }
+.a-panel.active { display: block; animation: fadeIn 0.4s ease; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Footer */
+footer { padding: 50px 0; text-align: center; background: var(--cream); }
+.footer-logo-wrap { width: 120px; margin: 0 auto 10px; }
+</style>
+</head>
+<body>
+
+<!-- SVG LOGO TANIMI (Re-usable) -->
+<symbol id="novera-svg" viewBox="0 0 300 90">
+  <path d="M43.6,18.8c0-8.8-7.2-16-16-16s-16,7.2-16,16s7.2,16,16,16S43.6,27.6,43.6,18.8z M17.2,18.8c0-5.7,4.7-10.4,10.4-10.4s10.4,4.7,10.4,10.4s-4.7,10.4-10.4,10.4S17.2,24.5,17.2,18.8z"/>
+  <path d="M78.8,3.2H65.4v29.6h13.4c8.8,0,16-7.2,16-16S87.6,3.2,78.8,3.2z M78.8,27.2H71V8.8h7.8c5.7,0,10.4,4.7,10.4,10.4S84.5,27.2,78.8,27.2z"/>
+  <!-- Gönderdiğin NOVERA.svg dosyasındaki tüm <path> verilerini buraya ekle -->
+  <path d="M0.8 45.4h15.2l8.4-16.3 8.3 16.3h14.7L28.8 3.5 0.8 45.4zM43.9 45.4c16.5 0 29.5-13 29.5-29.5S60.4-13.6 43.9-13.6 14.4-.6 14.4 15.9s13 29.5 29.5 29.5zM83.5 45.4c5.4-43.8 8-43.5 9.2-43.5 1.1 0 3.2-.1 6.4-.3.5 0 .9.2 1.3.5.4.4.6.9.6 1.4 0 .4-.1.9-.4 1.6l-2.9 8.2c-.4 2.3-.7 4.7-1.1 7.1-.4 2.3-.7 4-1 5.1-.3 1.1-.5 1.8-.7 2 .1.3.3.4.5.4.6 0 1.1-1.4 1.6-4.3.5-2.9.9-6.1 1.2-9.6.3-3.5.5-5.6.5-6.5 0-.3-.1-.6-.2-1-.2-.3-.3-.5-.3-.6-.4-.7-.6-1.3-.6-1.8 0-.5.1-1 .4-1.4.3-.4.8-.6 1.3-.6 2.8-.3 4.9-.4 6.4-.4.7 0 1.6.1 2.8.2 1.1.1 2 .2 2.6.2.6 0 1.1.2 1.4.6.3.4.5.9.5 1.5 0 .2-.1.4-.2.7-.1.3-.3.6-.6 1-.1 0-.2.2-.4.4-.2.3-.4 1-.7 2.2-.2 1.2-.5 2.8-.7 4.8-.4 3-1.2 6.9-2.4 11.8-1.2 4.9-2.3 9.2-3.5 12.8-.8 2.6-1.5 4.5-2.1 5.7-.6 1.2-1.1 2-1.5 2.3-.4.3-.9.4-1.5.4-2.6-.3-4.5-.4-5.7-.4-1 0-2.1.1-3.3.2-1.2.1-2.1.2-3 .2-.8 0-1.7-.9-2.6-2.8-.9-1.9-1.9-4.6-3-8.1-1.4-4.5-2.6-9.2-3.6-14.2-1-5-1.7-8.6-2-10.8-.3-2.1-.8-3.7-1.5-4.9-.1-.3-.3-.5-.4-.8-.1-.3-.1-.5-.1-.8 0-.6.2-1.1.6-1.5.4-.4.9-.6 1.5-.6zM121.3 45.4c.3 0 .8 0 1.7.1 2.6.2 6.5.3 11.6.3 4.3 0 8.4-.1 12.2-.3.4 0 .8-.1 1.2-.1.7 0 1.2.2 1.5.6.3.4.6 1.3.7 2.5.2 2.5.5 4.4 1 5.8.2.7.2 1.1.2 1.4 0 .4-.2.8-.6 1.1-.4.3-.8.4-1.3.4-.2 0-.5 0-.8-.1-.3-.1-.6-.2-.7-.2-2.3-.7-5.1-1.1-8.1-1.1l-3.7 0c-.7 0-1.2.1-1.4.4-.2.3-.4.7-.4 1.4v3c0 .7.2 1.1.5 1.3.3.2.9.3 1.8.3l4.4 0c1.4 0 2.7-.2 3.8-.5 1.1-.4 1.8-.5 2.1-.5.6 0 1.1.2 1.4.6.3.4.4.8.4 1.3 0 .4 0 1-.1 2-.1.9-.1 1.6-.1 2.1l.2 3.9c0 .4-.2.8-.5 1.2-.4.4-.8.6-1.4.6-.3 0-.8-.1-1.5-.3-.7-.2-1.4-.4-2-.5-.6-.1-1.4-.2-2.5-.2h-4.7c-.7 0-1.2.1-1.5.3-.3.2-.5.7-.5 1.3v3.1c0 .7.1 1.1.4 1.3.3.2.7.3 1.4.4 1.3.1 2.7.1 4.1.1 2.1 0 3.8-.1 5.2-.4 1.3-.3 2.6-.6 3.8-1 .6-.2 1-.3 1.3-.3.5 0 1 .2 1.3.5.4.3.5.7.5 1.2 0 .5-.2 1.3-.5 2.4-.2.8-.5 2-.7 3.5-.3 1.5-.4 2.5-.4 2.9 0 .9-.2 1.6-.5 2.1-.3.5-.8.7-1.7.7l-2.7-.1c-5.1-.2-9.5-.3-13.1-.3-4.2 0-7.2.1-8.8.2-1.6.1-2.6.2-2.8.2-.6 0-1.1-.2-1.5-.5-.3-.4-.5-.9-.5-1.5 0-.3 0-.6.1-.8.1-.2.3-.5.5-.8.2-.3.4-.7.6-1.2.2-.4.3-1 .3-1.8v-30.9c0-.8-.1-1.4-.2-1.8-.2-.4-.3-.8-.5-1.1-.2-.3-.4-.6-.5-.9-.1-.3-.2-.6-.2-.9 0-.6.2-1.1.5-1.4.4-.4.9-.6 1.6-.6zM156.8 45.4c.8 0 1.8.1 3.1.2 1.3.1 2.4.2 3.3.2 1 0 1.9 0 2.6 0 .8 0 1.8-.1 3.2-.2 1.3-.1 2.6-.2 3.8-.2 6.3 0 11 1.3 14 3.9 3.1 2.6 4.6 6.2 4.6 10.8 0 2.1-.4 4.1-1.1 5.9-.7 1.8-1.9 3.3-3.5 4.4-.2.1-.5.3-.9.6-.4.3-.5.5-.5.6 0 .1.1.3.2.5.2.2.4.5.7.8 1.1 1.2 2.1 2.7 3.1 4.5 1 1.8 1.7 3.8 2.2 5.9.1.4.3.9.5 1.5.2.6.5 1.1.8 1.5.2.3.3.5.4.7.1.2.1.4.1.8 0 .6-.2 1.1-.6 1.5-.4.4-1 .6-1.7.6-.7 0-1.6-.1-2.7-.2-1.1-.1-2.4-.2-3.8-.2-1.4 0-2.7.1-3.9.2-1.2.1-1.9.2-2.1.2-.5 0-1-.2-1.3-.6-.3-.4-.5-.9-.5-1.4 0-.2.1-.6.2-1.1.1-.5.2-.9.2-1.1 0-.8-.4-2-1.1-3.8-.8-1.8-1.7-3.3-2.7-4.7-1-1.4-1.9-2.1-2.6-2.1-.6 0-.8.4-.8 1.2v7c0 .8.1 1.4.2 1.7.1.4.3.8.6 1.2.4.4.6.9.6 1.5 0 .6-.2 1.1-.5 1.5-.4.4-.8.6-1.4.6-3.4-.3-5.6-.4-6.6-.4-1 0-2 .1-2.9.2-.9.1-1.6.2-2 .2-.4 0-1-.2-1.4-.6-.4-.4-.5-.9-.5-1.5 0-.4.2-.9.5-1.5.3-.4.5-.8.7-1.3.2-.4.3-1 .3-1.7V8.1c0-.8-.1-1.4-.2-1.8-.2-.4-.3-.8-.5-1.2-.1-.2-.3-.5-.4-.7-.1-.3-.2-.5-.2-.9 0-.6.2-1.1.5-1.4.4-.4.9-.6 1.5-.6zM173.7 14.1v6.1c0 .7.2 1.2.5 1.3.4.2 1 .3 1.8.3 1.8 0 3.1-.4 3.9-1.3.8-.9 1.3-2 1.3-3.3 0-3.1-1.8-4.6-5.2-4.6h-.4c-.7 0-1.1.1-1.4.4-.3.2-.5.6-.5 1.2zM197.1 45.4c.8-2 1.5-3.5 2.2-4.5.6-1 1.3-1.5 1.9-1.5.2 0 1.1.1 2.7.2 1.6.1 3.2.2 4.9.2 1.2 0 3.5-.1 6.8-.3.6 0 1.2.5 1.7 1.4.6 1 1.3 2.4 2.1 4.4 2 4.9 3.6 10.1 5 15.7 1.4 5.6 2.4 10.8 3.2 15.6.1.9.3 1.6.5 2.1.2.5.5 1 .8 1.4.2.3.4.6.5.8.1.2.1.5.1.9 0 .6-.2 1.1-.5 1.4-.3.4-.8.6-1.3.6-.2 0-1.1-.1-2.8-.2-1.7-.1-3.2-.2-4.7-.2-1.9 0-3.4.1-4.6.2-1.2.1-1.9.2-2.2.2-.6 0-1.1-.2-1.5-.6-.4-.4-.5-.9-.5-1.5 0-.4.2-.9.5-1.4.5-.7.7-1.5.7-2.2 0-1.2-.2-2-1.2-2.5-.4-.5-1.2-.8-2.2-.8h-6.1c-1.2 0-2 .3-2.4.9-.4.6-.6 1.4-.6 2.6 0 .7.2 1.3.6 1.9 0 0 .1.2.3.5.2.3.3.7.3 1.1 0 .6-.2 1-.5 1.4-.3.4-.7.6-1.2.6-.5 0-1.3-.1-2.3-.2-1-.1-2.1-.2-3.2-.2-1.6 0-3.3.1-5.1.3l-1.2.1c-.6 0-1-.2-1.4-.6-.4-.4-.5-.9-.5-1.5 0-.3.1-.6.2-.8.1-.3.4-.7.9-1.3.3-.4.5-.8.7-1.5.2-.6.5-2 .9-4.1.5-3.1 1.5-7.4 2.9-13.1 1.4-5.7 3.1-10.8 5-15.4zM215.3 16.3c-1.5 4-2.2 6.9-2.2 8.5 0 .5.1.9.4 1.1.3.3.8.4 1.6.4h3.7c1.2 0 1.8-.5 1.8-1.5 0-1 .2-2.3-.2-4.1-.5-1.8-.7-2.8-.9-3.1-.9-2.7-1.6-4.1-2.1-4.1-.3 0-.6.2-.8.6-.2.3-.5 1.1-.9 2.2z"/>
+</symbol>
+
+<div id="menu-view" class="page active">
+  <div class="hero">
+    <div class="hero-logo-wrap novera-logo logo-white">
+      <svg><use xlink:href="#novera-svg"></use></svg>
+    </div>
+  </div>
+
+  <nav class="sticky-nav" id="cat-nav"></nav>
+  <div id="menu-body" style="padding-bottom:100px"></div>
+
+  <footer>
+    <div class="footer-logo-wrap novera-logo logo-black">
+      <svg><use xlink:href="#novera-svg"></use></svg>
+    </div>
+    <p style="font-size:11px; font-weight:400; color:var(--ink-light); margin-top:10px;">Specialty Coffee & Dessert</p>
+  </footer>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-view" class="page">
+  <div class="a-layout">
+    <div class="a-sidebar">
+      <div class="a-sidebar-logo novera-logo logo-black">
+        <svg><use xlink:href="#novera-svg"></use></svg>
+      </div>
+      <button class="asb-btn active" id="btn-settings" onclick="swPanel('settings')">
+        <span class="material-icons-round">settings</span> Ayarlar
+      </button>
+      <button class="asb-btn" id="btn-categories" onclick="swPanel('categories')">
+        <span class="material-icons-round">list</span> Kategoriler
+      </button>
+      <div id="sidebar-dynamic-cats"></div>
+      <button class="asb-btn" style="margin-top:auto; color:#b43c1e;" onclick="window.location.reload()">
+        <span class="material-icons-round">logout</span> Çıkış Yap
+      </button>
+    </div>
+    
+    <div class="a-main">
+      <!-- Ayarlar Paneli -->
+      <div class="a-panel active" id="panel-settings">
+        <h2 style="margin-bottom:20px;">Genel Ayarlar</h2>
+        <p>Mağaza adı, logonun altındaki duyuru ve iletişim bilgilerini buradan güncelleyin.</p>
+      </div>
+
+      <!-- Kategori Paneli -->
+      <div class="a-panel" id="panel-categories">
+        <h2 style="margin-bottom:20px;">Kategorileri Yönet</h2>
+        <div id="clist"></div>
+      </div>
+
+      <!-- Ürün Panelleri (JS ile dolacak) -->
+      <div id="dynamic-panels"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Mock Veri (Firebase entegrasyonu için şema)
+let D = {
+  categories: [
+    {id: "c1", name: "Sıcak İçecekler"},
+    {id: "c2", name: "Tatlılar"}
+  ],
+  items: {
+    c1: [
+      {id: "i1", name: "Americano", desc: "Sıcak su ile inceltilmiş double espresso", price: "140", sizes: {S:{on:true, price:"140"}, M:{on:true, price:"160"}}},
+      {id: "i2", name: "Latte", desc: "Bol sütlü ve yumuşak içimli kahve", price: "160", sizes: {S:{on:true, price:"160"}, L:{on:true, price:"190"}}}
+    ]
+  }
+};
+
+// PANEL GEÇİŞ SİSTEMİ (Kırılmaz Mimarisi)
+function swPanel(id) {
+  // Tüm panelleri gizle
+  document.querySelectorAll('.a-panel').forEach(p => p.classList.remove('active'));
+  // Tüm butonları pasif yap
+  document.querySelectorAll('.asb-btn').forEach(b => b.classList.remove('active'));
+  
+  // Hedef paneli göster
+  const target = document.getElementById('panel-' + id);
+  if(target) target.classList.add('active');
+  
+  // Hedef butonu aktif yap
+  const btn = document.getElementById('btn-' + id);
+  if(btn) btn.classList.add('active');
+}
+
+// ADMIN RENDER (Kategori Sayfaları Dahil)
+function renderAdmin() {
+  const sidebar = document.getElementById('sidebar-dynamic-cats');
+  const panels = document.getElementById('dynamic-panels');
+  sidebar.innerHTML = ""; panels.innerHTML = "";
+  
+  D.categories.forEach(cat => {
+    // Sidebar butonu
+    sidebar.innerHTML += `
+      <button class="asb-btn" id="btn-items-${cat.id}" onclick="swPanel('items-${cat.id}')">
+        <span class="material-icons-round">restaurant_menu</span> ${cat.name}
+      </button>`;
+      
+    // Ürün yönetim paneli
+    panels.innerHTML += `
+      <div class="a-panel" id="panel-items-${cat.id}">
+        <h2>${cat.name} Ürün Yönetimi</h2>
+        <div id="grid-${cat.id}" style="margin-top:20px;">
+          <!-- Ürün kartları buraya gelecek -->
+        </div>
+      </div>`;
+  });
+}
+
+// MENÜ RENDER
+function renderMenu() {
+  const body = document.getElementById('menu-body');
+  const nav = document.getElementById('cat-nav');
+  body.innerHTML = ""; nav.innerHTML = "";
+
+  D.categories.forEach((cat, idx) => {
+    nav.innerHTML += `<div class="nav-pill ${idx===0?'active':''}" onclick="scrollToCat('${cat.id}')">${cat.name}</div>`;
+    
+    let html = (D.items[cat.id] || []).map(it => `
+      <div class="item-card">
+        <img src="${it.img || ''}" class="item-img" onerror="this.src='https://via.placeholder.com/150'">
+        <div class="item-info">
+          <div class="item-name">${it.name}</div>
+          <div class="item-desc">${it.desc || ''}</div>
+          <div class="size-row">
+            ${it.sizes?.S?.on ? `<span class="size-chip">K: ${it.sizes.S.price}₺</span>` : ''}
+            ${it.sizes?.M?.on ? `<span class="size-chip">O: ${it.sizes.M.price}₺</span>` : ''}
+            ${it.sizes?.L?.on ? `<span class="size-chip">B: ${it.sizes.L.price}₺</span>` : ''}
+            ${(!it.sizes?.S?.on && !it.sizes?.M?.on && !it.sizes?.L?.on) ? `<span style="font-weight:800">${it.price}₺</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    body.innerHTML += `<div id="sec-${cat.id}"><h3 style="padding:25px 15px 10px; font-weight:800;">${cat.name}</h3>${html}</div>`;
+  });
+}
+
+function scrollToCat(id) {
+  const el = document.getElementById('sec-' + id);
+  if(el) {
+    const yOffset = -70; 
+    const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({top: y, behavior: 'smooth'});
+  }
+}
+
+// Şifre kontrolü sonrası Admin panelini hazırla
+function openAdmin() {
+  document.getElementById('menu-view').classList.remove('active');
+  document.getElementById('admin-view').classList.add('active');
+  renderAdmin();
+  swPanel('settings'); // İlk girişte Ayarlar açılır
+}
+
+// İlk Çalıştırma
+renderMenu();
+</script>
+</body>
+</html>
