@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>NOVERA — Coffee & Dessert</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,600;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+:root{
+  --accent:#1a3d2b;
+  --accent2:#2b4e3b;
+  --accent3:#426651;
+  --accent-light:#a9d0b6;
+  --bg:#fff8f4;
+  --surface:#ffffff;
+  --surface-low:#f5f0e8;
+  --surface-dim:#e8d7c6;
+  --ink:#231a0f;
+  --ink2:#414843;
+  --ink3:#727973;
+  --ink4:#b8b8b0;
+  --border:rgba(35,26,15,0.08);
+  --border2:rgba(35,26,15,0.15);
+  --ease:cubic-bezier(0.22,1,0.36,1);
+  --cream:#fff8f4;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:"Poppins",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+/* Allow text selection only in admin inputs */
+input,textarea{user-select:text;-webkit-user-select:text;}
+button,input,textarea,select{font-family:"Poppins",sans-serif;cursor:pointer;}
+
+.page{display:none;min-height:100vh;}
+.page.active{display:block;}
+
+/* ── TOP BAR ── */
+#menu-view{max-width:520px;margin:0 auto;}
+.top-bar{
+  position:sticky;top:0;z-index:60;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.top-bar-logo{display:flex;align-items:center;flex-shrink:0;}
+.top-bar-search{
+  flex:1;max-width:220px;
+  display:flex;align-items:center;gap:8px;
+  background:rgba(26,61,43,0.07);
+  border:1px solid rgba(26,61,43,0.15);
+  border-radius:40px;padding:8px 14px;
+  transition:all .22s var(--ease);
+}
+.top-bar-search:focus-within{border-color:var(--accent3);background:rgba(26,61,43,0.1);box-shadow:0 0 0 3px rgba(26,61,43,0.07);}
+.top-bar-search .material-icons-round{font-size:16px;color:var(--accent3);}
+.top-bar-search input{flex:1;background:none;border:none;outline:none;font-size:12.5px;font-weight:300;color:var(--ink);min-width:0;}
+.top-bar-search input::placeholder{color:var(--ink3);}
+
+/* ── HERO SLIDER ── */
+.hero-slider{position:relative;width:100%;overflow:hidden;background:#000;}
+.hero-slides{display:flex;transition:transform .5s var(--ease);}
+.hero-slide{
+  flex-shrink:0;width:100%;
+  height:min(58vw,280px);min-height:160px;
+  position:relative;background:var(--surface-dim);
+}
+.hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+.hero-slide-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--surface-dim);gap:8px;
+}
+.hero-slide-placeholder .material-icons-round{font-size:28px;color:var(--ink4);}
+.hero-slide-placeholder span{font-size:11px;font-weight:300;color:var(--ink4);}
+
+/* ── CAT NAV ── */
+.cat-nav{
+  position:sticky;top:57px;z-index:50;
+  background:var(--accent);
+  padding:0 14px;
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;scrollbar-width:none;
+  height:46px;
+}
+.cat-nav::-webkit-scrollbar{display:none;}
+.nav-tab{
+  flex-shrink:0;font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,248,244,0.55);
+  background:none;border:none;border-bottom:2px solid transparent;
+  height:46px;padding:0 16px;
+  display:inline-flex;align-items:center;
+  transition:all .2s var(--ease);white-space:nowrap;
+}
+.nav-tab.active{color:#fff8f4;border-bottom-color:#fff8f4;}
+.nav-tab:hover:not(.active){color:rgba(255,248,244,0.8);}
+
+/* ── MENU BODY ── */
+.menu-body{padding:18px 14px 80px;background:var(--bg);}
+.cat-section{display:none;}
+.cat-section.active{display:block;}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.sh-line{flex:1;height:1px;background:var(--border2);}
+.sh-label{font-family:"Noto Serif",serif;font-size:11px;font-weight:600;font-style:italic;letter-spacing:.04em;color:var(--accent);white-space:nowrap;}
+
+/* ── ITEM CARD ── */
+.item-card{
+  background:var(--surface);border-radius:12px;
+  margin-bottom:10px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 2px 16px rgba(35,26,15,.05);
+  transition:all .3s var(--ease);
+  opacity:0;transform:translateY(10px);
+}
+.item-card.visible{opacity:1;transform:translateY(0);}
+.item-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(35,26,15,.1);}
+.item-card:active{transform:scale(.99);}
+.item-inner{overflow:hidden;border-radius:12px 12px 0 0;}
+.item-inner{display:flex;align-items:stretch;min-height:76px;}
+.item-img-wrap{width:76px;flex-shrink:0;overflow:hidden;background:var(--surface-dim);position:relative;align-self:stretch;}
+.item-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease);}
+.item-card:hover .item-img-wrap img{transform:scale(1.07);}
+.item-no-img{width:100%;height:100%;min-height:76px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--surface-low),var(--surface-dim));}
+.item-no-img .material-icons-round{font-size:20px;color:var(--ink4);}
+.item-body{flex:1;padding:13px 14px 13px 15px;display:flex;flex-direction:column;justify-content:center;gap:3px;}
+.item-name{font-family:"Noto Serif",serif;font-size:16px;font-weight:600;color:var(--ink);line-height:1.25;}
+.item-desc{font-size:11.5px;font-weight:300;color:var(--ink3);line-height:1.6;}
+.item-desc:empty{display:none;}
+.desc-toggle{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;cursor:pointer;color:#1a1a1a;font-family:"Poppins",sans-serif;font-size:11.5px;font-weight:300;line-height:1;margin-left:10px;}
+.desc-toggle .material-icons-round{font-size:13px;transition:transform .25s;}
+.desc-toggle.open .material-icons-round{transform:rotate(180deg);}
+.desc-panel{overflow:hidden;max-height:0;transition:max-height .3s ease;background:var(--surface);border-radius:0 0 12px 12px;}
+.desc-panel.open{max-height:200px;}
+.desc-panel-inner{padding:12px 15px 14px;font-size:12px;font-weight:300;color:var(--ink);line-height:1.65;font-family:"Poppins",sans-serif;border-top:1.5px solid var(--border);}
+.item-sizes{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;}
+.size-chip{font-size:10px;font-weight:600;letter-spacing:.05em;padding:3px 10px;border-radius:40px;border:1px solid var(--border2);color:var(--ink3);background:var(--surface-low);}
+.size-chip span{font-weight:400;color:var(--accent);margin-left:3px;}
+.item-foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+.item-price{font-size:14.5px;font-weight:700;color:var(--accent);}
+.item-badges{display:flex;gap:4px;flex-wrap:wrap;}
+.badge{font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:40px;display:inline-flex;align-items:center;gap:3px;}
+.badge-new{background:rgba(26,61,43,.1);color:var(--accent);position:relative;overflow:hidden;}
+.badge-new::after{content:"";position:absolute;inset:-2px;background:linear-gradient(90deg,transparent,rgba(26,61,43,.15),transparent);transform:translateX(-100%);animation:shimmer 2.5s ease-in-out infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%);}60%,100%{transform:translateX(100%);}}
+.badge-hot{background:rgba(26,61,43,.08);color:var(--accent);}
+.badge-veg{background:rgba(40,120,60,.1);color:#287840;}
+.badge-sweet{background:rgba(220,100,120,.1);color:#c0304a;}
+.badge-bitter{background:rgba(60,30,10,.1);color:#5c2d0a;}
+.badge-smooth{background:rgba(100,160,120,.1);color:#2d6645;}
+.badge-cold{background:rgba(80,140,200,.1);color:#1a5c9a;}
+.badge-warm{background:rgba(200,120,40,.1);color:#a05010;}
+.badge-strong{background:rgba(40,20,10,.1);color:#3d1f0a;}
+.badge-fruity{background:rgba(220,80,160,.1);color:#a0205a;}
+.badge-creamy{background:rgba(240,200,120,.1);color:#8a6020;}
+.badge-seasonal{background:rgba(100,180,80,.1);color:#3a7020;}
+.badge-special{background:rgba(140,80,200,.1);color:#6020a0;}
+.badge-nosugar{background:rgba(80,160,140,.1);color:#205a50;}
+.badge-iced{background:rgba(100,180,220,.1);color:#1a6080;}
+.badge-summer{background:rgba(240,160,40,.1);color:#a05000;}
+.badge-classic{background:rgba(100,80,60,.1);color:#4a3020;}
+.badge-signature{background:rgba(26,61,43,.12);color:var(--accent);}
+.badge-milky{background:rgba(180,130,80,.1);color:#7a4e1a;}
+.badge-spiced{background:rgba(210,100,30,.1);color:#a04010;}
+.badge-choco{background:rgba(80,40,10,.1);color:#4a1e05;}
+.badge-caramel{background:rgba(200,150,30,.1);color:#8a5a00;}
+.badge-foamy{background:rgba(160,160,160,.1);color:#555555;}
+.badge-herbal{background:rgba(60,140,60,.1);color:#1e6e1e;}
+.badge-whipped{background:rgba(240,180,200,.1);color:#a03060;}
+
+
+
+
+/* ── BRANCH DECORATION ── */
+.branch-divider{
+  position:relative;
+  height:0;
+  pointer-events:none;
+  background:transparent;
+  overflow:visible;
+  z-index:0;
+}
+.branch-left{
+  position:absolute;
+  left:-40px;
+  bottom:0px;
+  width:260px;
+  color:var(--accent);
+  transform:rotate(10deg);
+  transform-origin:bottom left;
+  z-index:0;
+}
+.branch-right{
+  position:absolute;
+  right:-40px;
+  bottom:0px;
+  width:220px;
+  color:var(--accent);
+  transform:rotate(-8deg);
+  transform-origin:bottom right;
+  z-index:0;
+}
+.menu-footer{
+  position:relative;
+  z-index:1;
+}
+.item-card{
+  position:relative;
+  z-index:1;
+}
+.menu-body{
+  position:relative;
+  z-index:1;
+}
+
+/* ── SIZE SELECTOR ── */
+.item-inner{display:flex;align-items:stretch;min-height:76px;}
+.item-body{flex:1;padding:13px 14px 13px 15px;display:flex;flex-direction:column;justify-content:space-between;}
+.item-body-top{display:flex;flex-direction:column;gap:3px;}
+/* Size panel — dark vertical strip on right */
+.size-panel{
+  width:68px;flex-shrink:0;
+  background:var(--accent);
+  display:flex;flex-direction:column;
+  align-items:center;
+  padding:8px 0 6px;
+  gap:0;
+  border-radius:0 12px 12px 0;
+  transition:border-radius .3s ease;
+}
+.size-panel.desc-open{
+  border-radius:0 12px 0 0;
+}
+.size-panel-label{
+  font-family:"Poppins",sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:#fff8f4;margin-bottom:6px;
+}
+.size-option{
+  display:flex;align-items:center;gap:6px;
+  width:100%;padding:4px 8px;
+  cursor:pointer;background:none;border:none;
+  transition:background .15s;
+}
+.size-option:hover{background:rgba(255,248,244,0.08);}
+.size-option.active{background:rgba(255,248,244,0.15);}
+.size-option .size-dot{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid rgba(255,248,244,0.5);
+  background:none;transition:all .15s;
+}
+.size-option.active .size-dot{
+  background:#fff8f4;border-color:#fff8f4;
+}
+.size-option .size-lbl{
+  font-family:"Poppins",sans-serif;
+  font-size:9.5px;font-weight:300;
+  color:rgba(255,248,244,0.7);
+  transition:all .15s;white-space:nowrap;
+}
+.size-option.active .size-lbl{color:#fff8f4;font-weight:700;}
+.item-price-wrap{display:flex;align-items:center;margin-top:4px;}
+
+
+/* ── SEARCH PAGE ── */
+.search-page{display:none;padding:14px 14px 80px;background:var(--bg);}
+.search-page.active{display:block;}
+.search-input-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(26,61,43,0.07);
+  border:1px solid rgba(26,61,43,0.15);
+  border-radius:40px;padding:10px 16px;
+  margin-bottom:20px;
+  transition:all .22s var(--ease);
+}
+.search-input-wrap:focus-within{border-color:var(--accent3);background:rgba(26,61,43,0.1);box-shadow:0 0 0 3px rgba(26,61,43,.07);}
+.search-input-wrap .material-icons-round{font-size:18px;color:var(--accent3);}
+.search-input-wrap input{flex:1;background:none;border:none;outline:none;font-size:13.5px;font-weight:300;color:var(--ink);}
+.search-input-wrap input::placeholder{color:var(--ink3);}
+.search-results-list{margin-bottom:20px;}
+.search-results-list:empty{display:none;}
+.search-cats-title{font-family:"Noto Serif",serif;font-size:13px;font-weight:600;font-style:italic;color:var(--accent);margin-bottom:12px;letter-spacing:.02em;}
+.search-cat-grid{display:flex;flex-direction:column;gap:10px;}
+.search-cat-card{
+  background:var(--surface);
+  border-radius:12px;
+  border:1.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow:0 2px 14px rgba(35,26,15,.05);
+  padding:16px 18px;
+  cursor:pointer;
+  transition:all .22s var(--ease);
+  display:flex;flex-direction:column;gap:4px;
+}
+.search-cat-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(35,26,15,.1);}
+.search-cat-card:active{transform:scale(.99);}
+.search-cat-name{font-family:"Noto Serif",serif;font-size:16px;font-weight:600;color:var(--accent);}
+.search-cat-desc{font-size:12px;font-weight:300;color:var(--ink3);line-height:1.5;}
+.search-empty{text-align:center;padding:32px 20px;color:var(--ink3);font-size:13px;font-weight:300;}
+
+/* ── SEARCH RESULTS ── */
+.search-results{display:none;padding:14px 14px 80px;}
+.search-results.active{display:block;}
+.search-empty{text-align:center;padding:40px 20px;color:var(--ink3);font-size:13px;font-weight:300;}
+
+/* ── FOOTER ── */
+.menu-footer{background:var(--accent);color:var(--cream);padding:44px 22px 28px;margin-bottom:68px;}
+.footer-inner{max-width:520px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:28px;}
+@media(max-width:400px){.footer-top{grid-template-columns:1fr;}}
+.footer-brand-name{margin-bottom:10px;display:flex;align-items:center;}
+.footer-brand-desc{font-size:12px;font-weight:300;color:rgba(255,248,244,0.7);line-height:1.75;}
+.footer-review-btn{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:10px 20px;background:rgba(255,248,244,.1);border:1px solid rgba(255,248,244,.2);border-radius:12px;font-size:12px;font-weight:600;color:#fff8f4;transition:all .22s var(--ease);}
+.footer-review-btn:hover{background:rgba(255,248,244,.18);}
+.footer-review-btn .material-icons-round{font-size:15px;}
+.footer-section-label{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,248,244,0.5);margin-bottom:9px;}
+.footer-address{font-size:12.5px;font-weight:300;color:#fff8f4;line-height:1.75;margin-bottom:12px;}
+.footer-map{width:100%;height:85px;border-radius:8px;overflow:hidden;background:rgba(255,248,244,.08);display:flex;align-items:center;justify-content:center;margin-bottom:16px;border:1px solid rgba(255,248,244,.1);}
+.footer-map-placeholder{display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,248,244,.35);font-size:11px;}
+.footer-map-placeholder .material-icons-round{font-size:20px;}
+.footer-hours{list-style:none;}
+.footer-hours li{display:flex;justify-content:space-between;font-size:12.5px;font-weight:300;color:#fff8f4;padding:5px 0;border-bottom:1px solid rgba(255,248,244,.08);}
+.footer-hours li:last-child{border-bottom:none;}
+.footer-divider{height:1px;background:rgba(255,248,244,.1);margin:18px 0;}
+.footer-copy{text-align:center;font-size:11px;font-weight:300;color:rgba(255,248,244,.4);}
+.admin-ghost{display:block;width:100%;margin-top:12px;background:none;border:none;font-size:9.5px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,248,244,.18);transition:color .2s;padding:6px;text-align:center;}
+.admin-ghost:hover{color:rgba(255,248,244,.5);}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;z-index:55;display:flex;justify-content:space-around;align-items:center;padding:10px 16px 14px;background:rgba(255,248,244,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);box-shadow:0 -4px 24px rgba(35,26,15,.07);}
+.bn-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--ink4);font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .2s var(--ease);padding:2px 12px;border-radius:8px;}
+.bn-btn.active{color:var(--accent);}
+.bn-btn .material-icons-round{font-size:22px;}
+
+/* ── REVIEW ── */
+#review-view{max-width:520px;margin:0 auto;}
+.review-hero{background:var(--accent);padding:46px 28px 32px;text-align:center;position:relative;overflow:hidden;}
+.review-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 100% 80% at 50% -20%,rgba(74,132,100,.3),transparent);}
+.r-back{position:absolute;top:16px;left:16px;z-index:2;background:rgba(255,248,244,.12);border:1px solid rgba(255,248,244,.2);border-radius:12px;padding:7px 14px;font-size:11px;font-weight:500;color:rgba(255,248,244,.85);letter-spacing:.05em;transition:all .2s;}
+.r-hero-title{font-family:"Noto Serif",serif;font-size:26px;font-weight:700;font-style:italic;color:#fff8f4;position:relative;z-index:1;margin-bottom:5px;}
+.r-hero-sub{font-size:11px;font-weight:400;color:rgba(255,248,244,.8);letter-spacing:.1em;position:relative;z-index:1;}
+.review-body{padding:18px 14px 100px;background:var(--bg);}
+.r-card{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:20px;margin-bottom:12px;}
+.r-card-label{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);margin-bottom:13px;}
+.star-row{display:flex;gap:4px;margin-bottom:4px;}
+.star-btn{background:none;border:none;padding:4px;color:var(--ink4);transition:all .15s var(--ease);line-height:1;font-size:0;}
+.star-btn svg{width:28px;height:28px;transition:transform .15s var(--ease);}
+.star-btn:hover svg{transform:scale(1.18);}
+.star-btn.lit svg .star-fill{fill:#d4a017;stroke:#d4a017;}
+.star-btn svg .star-fill{fill:none;stroke:#b0b0a0;stroke-width:1.8;}
+.star-lbl{font-size:12px;font-weight:300;font-style:italic;color:var(--ink3);min-height:18px;margin-top:3px;}
+.detail-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);gap:12px;}
+.detail-row:last-child{border-bottom:none;}
+.detail-lbl{font-size:13px;font-weight:500;color:var(--ink);flex:1;}
+.mini-stars{display:flex;gap:2px;}
+.mini-star-btn{background:none;border:none;padding:2px;font-size:0;}
+.mini-star-btn svg{width:18px;height:18px;}
+.mini-star-btn.lit svg .star-fill{fill:#d4a017;stroke:#d4a017;}
+.mini-star-btn svg .star-fill{fill:none;stroke:#b0b0a0;stroke-width:2;}
+.r-input,.r-textarea{width:100%;background:var(--surface-low);border:1px solid var(--border2);border-radius:12px;padding:11px 13px;font-size:13px;font-weight:300;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s;}
+.r-input:focus,.r-textarea:focus{border-color:var(--accent3);box-shadow:0 0 0 3px rgba(26,61,43,.07);}
+.r-input::placeholder,.r-textarea::placeholder{color:var(--ink4);}
+.r-textarea{resize:none;height:110px;line-height:1.6;}
+.r-submit{width:100%;padding:15px;background:var(--accent);color:#fff8f4;border:none;border-radius:12px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .3s var(--ease);box-shadow:0 4px 20px rgba(26,61,43,.2);margin-top:4px;}
+.r-submit:hover{background:var(--accent2);transform:translateY(-2px);}
+.r-submit:active{transform:translateY(0);}
+.r-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.r-success{display:none;text-align:center;padding:48px 20px;}
+.r-success-icon{font-size:56px;margin-bottom:16px;}
+.r-success-title{font-family:"Noto Serif",serif;font-size:22px;font-weight:700;color:var(--accent);margin-bottom:8px;}
+.r-success-sub{font-size:13px;font-weight:300;color:var(--ink3);line-height:1.7;}
+
+/* ── ADMIN ── */
+#admin-view{max-width:none;background:var(--bg);}
+.a-topbar{position:sticky;top:0;z-index:100;background:rgba(255,248,244,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.a-brand{display:flex;align-items:center;gap:10px;}
+.a-brand-name{display:flex;align-items:center;}
+.a-badge{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;background:rgba(26,61,43,.09);color:var(--accent);padding:3px 9px;border-radius:20px;}
+.a-actions{display:flex;gap:7px;}
+.a-btn{font-size:11px;font-weight:600;background:none;border:1.5px solid var(--border2);color:var(--ink3);padding:7px 13px;border-radius:8px;transition:all .18s;}
+.a-btn:hover{color:var(--ink);border-color:var(--ink3);}
+.a-btn.primary{background:var(--accent);color:#fff8f4;border-color:var(--accent);}
+.a-btn.primary:hover{background:var(--accent2);}
+.a-layout{display:flex;min-height:calc(100vh - 56px);}
+.a-sidebar{width:205px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:14px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+@media(max-width:640px){.a-sidebar{display:none;}.a-layout{flex-direction:column;}.a-main{padding:14px 13px 100px;}}
+.asb-sec{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink4);padding:0 13px 6px;margin-top:6px;}
+.asb-btn{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;color:var(--ink3);font-size:12px;font-weight:400;padding:9px 13px;text-align:left;transition:all .15s;border-left:2px solid transparent;}
+.asb-btn:hover{color:var(--ink);background:var(--surface-low);}
+.asb-btn.on{color:var(--accent);background:rgba(26,61,43,.06);border-left-color:var(--accent);font-weight:600;}
+.asb-ico{font-size:14px;width:17px;text-align:center;flex-shrink:0;}
+.asb-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;}
+.asb-cnt{font-size:9.5px;background:var(--surface-low);color:var(--ink3);padding:1px 6px;border-radius:20px;border:1px solid var(--border);}
+.a-mob-nav{display:none;position:sticky;top:56px;z-index:80;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 13px;overflow-x:auto;scrollbar-width:none;gap:5px;}
+.a-mob-nav::-webkit-scrollbar{display:none;}
+@media(max-width:640px){.a-mob-nav{display:flex;}}
+.a-mob-btn{flex-shrink:0;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;background:none;border:1.5px solid var(--border);color:var(--ink3);padding:6px 13px;border-radius:20px;transition:all .15s;white-space:nowrap;}
+.a-mob-btn.on{color:var(--accent);background:rgba(26,61,43,.08);border-color:var(--accent);}
+.a-mob-btn:active{transform:scale(.97);}
+.a-main{flex:1;padding:22px 20px 100px;min-width:0;}
+
+/* ALL PANELS HIDDEN BY DEFAULT */
+.a-panel{display:none;}
+
+.a-panel-title{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.a-panel-sub{font-size:12px;font-weight:400;color:var(--ink);margin-bottom:20px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:480px){.fgrid{grid-template-columns:1fr;}}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg.span2{grid-column:1/-1;}
+.flbl{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);}
+.fi,.fta,.fsel{background:var(--surface);border:1px solid var(--border2);color:var(--ink);padding:10px 12px;font-size:13.5px;font-weight:300;border-radius:10px;outline:none;width:100%;transition:border-color .18s,box-shadow .18s;}
+.fi:focus,.fta:focus,.fsel:focus{border-color:var(--accent3);box-shadow:0 0 0 3px rgba(26,61,43,.07);}
+.fi::placeholder,.fta::placeholder{color:var(--ink4);}
+.fta{resize:vertical;min-height:70px;line-height:1.55;}
+.fsel{-webkit-appearance:none;}
+.fsep{height:1px;background:var(--border);margin:20px 0;}
+.fsub{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.fhint{font-size:11.5px;font-weight:400;color:var(--ink);margin-bottom:13px;}
+/* Color picker */
+.cp-preview-row{display:flex;align-items:center;gap:12px;margin-bottom:13px;}
+.cp-preview{width:40px;height:40px;border-radius:10px;border:3px solid rgba(255,255,255,.9);box-shadow:0 4px 16px rgba(0,0,0,.12);flex-shrink:0;}
+.cp-hex-input{background:var(--surface);border:1.5px solid var(--border2);border-radius:8px;padding:9px 12px;font-size:14px;color:var(--ink);outline:none;width:130px;font-family:monospace;transition:border-color .18s;}
+.cp-hex-input:focus{border-color:var(--accent3);box-shadow:0 0 0 3px rgba(26,61,43,.07);}
+.cp-label{font-size:10px;font-weight:300;color:var(--ink3);}
+.cp-track-wrap{margin-bottom:11px;}
+.cp-track-label{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;}
+.cp-hue-track{position:relative;width:100%;height:17px;border-radius:9px;background:linear-gradient(90deg,hsl(0,80%,45%),hsl(60,80%,45%),hsl(120,70%,38%),hsl(180,70%,40%),hsl(240,70%,50%),hsl(300,70%,45%),hsl(360,80%,45%));cursor:pointer;user-select:none;touch-action:none;}
+.cp-sat-track,.cp-lit-track{position:relative;width:100%;height:17px;border-radius:9px;cursor:pointer;user-select:none;touch-action:none;}
+.cp-thumb{position:absolute;width:23px;height:23px;border-radius:50%;background:#fff;border:2.5px solid rgba(255,255,255,.95);box-shadow:0 2px 8px rgba(0,0,0,.25),0 0 0 1.5px rgba(0,0,0,.07);top:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.cp-presets{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px;}
+.cp-swatch{width:27px;height:27px;border-radius:8px;cursor:pointer;border:2px solid transparent;box-shadow:0 2px 6px rgba(0,0,0,.1);transition:all .18s var(--ease);}
+.cp-swatch:hover,.cp-swatch.on{border-color:var(--ink);transform:scale(1.14);}
+/* Hero upload */
+.hero-upload-wrap{border:2px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface-low);}
+.hero-upload-wrap:hover{border-color:var(--accent3);background:rgba(26,61,43,.04);}
+.hero-upload-prev{width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:10px;display:block;}
+.hero-upload-text{font-size:12px;font-weight:300;color:var(--ink3);}
+/* Cat list */
+.c-list{display:flex;flex-direction:column;gap:7px;margin-bottom:13px;}
+.c-row{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;transition:border-color .15s;}
+.c-row:hover{border-color:var(--border2);}
+.c-drag{color:var(--ink4);font-size:13px;user-select:none;cursor:grab;flex-shrink:0;}
+.c-name{flex:1;background:none;border:none;color:var(--ink);font-size:13.5px;font-weight:400;outline:none;}
+.c-name::placeholder{color:var(--ink4);}
+.b-ico{background:none;border:none;color:var(--ink4);font-size:13px;padding:4px;border-radius:4px;transition:color .15s;flex-shrink:0;line-height:1;}
+.b-ico:hover{color:#b43c1e;}
+.b-ico.go:hover{color:var(--accent);}
+/* Item grid */
+.i-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(256px,1fr));gap:11px;margin-bottom:13px;}
+@media(max-width:640px){.i-grid{grid-template-columns:1fr;}}
+.ai-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s;}
+.ai-card:hover{border-color:var(--border2);box-shadow:0 4px 18px rgba(35,26,15,.08);}
+.ai-img{height:110px;background:var(--surface-dim);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;}
+.ai-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.ai-img-ov{position:absolute;inset:0;background:rgba(26,61,43,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;opacity:0;transition:opacity .2s;}
+.ai-img:hover .ai-img-ov{opacity:1;}
+.ai-img-ph .material-icons-round{font-size:26px;color:var(--ink4);}
+.ai-img-ov-t{font-size:11px;color:rgba(255,248,244,.9);}
+.ai-body{padding:11px;}
+.ai-inps{display:flex;flex-direction:column;gap:6px;}
+.af{background:var(--surface-low);border:1px solid var(--border);color:var(--ink);padding:7px 10px;font-size:12.5px;font-weight:300;border-radius:8px;outline:none;width:100%;transition:border-color .15s;}
+.af:focus{border-color:var(--accent3);box-shadow:0 0 0 2px rgba(26,61,43,.06);}
+.af::placeholder{color:var(--ink4);}
+.size-pricing{background:var(--surface-low);border-radius:8px;padding:10px;margin-top:4px;}
+.size-pricing-label{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;}
+.size-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.size-row:last-child{margin-bottom:0;}
+.size-row-lbl{font-size:11.5px;font-weight:600;color:var(--ink);width:52px;flex-shrink:0;}
+.size-toggle{width:28px;height:16px;background:var(--surface-dim);border:1px solid var(--border2);border-radius:8px;position:relative;transition:all .18s;flex-shrink:0;cursor:pointer;}
+.size-toggle.on{background:var(--accent);border-color:var(--accent);}
+.size-toggle::after{content:"";position:absolute;width:10px;height:10px;background:#fff;border-radius:50%;top:2px;left:2px;transition:transform .18s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.15);}
+.size-toggle.on::after{transform:translateX(12px);}
+.size-price-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--ink);padding:5px 9px;font-size:12px;border-radius:8px;outline:none;transition:border-color .15s;}
+.size-price-input:focus{border-color:var(--accent3);}
+.size-price-input::placeholder{color:var(--ink4);}
+.size-price-input:disabled{opacity:.4;}
+.tag-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
+.ttog{font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1.5px solid var(--border2);background:none;color:var(--ink3);transition:all .15s;cursor:pointer;}
+.ttog.ton{background:var(--accent);color:#fff8f4;border-color:var(--accent);}
+.ttog.tnew{background:rgba(26,61,43,.09);color:var(--accent);border-color:rgba(26,61,43,.25);}
+.ttog.thot{background:rgba(26,61,43,.06);color:var(--accent2);border-color:rgba(26,61,43,.2);}
+.ttog.tveg{background:rgba(40,120,60,.09);color:#287840;border-color:rgba(40,120,60,.25);}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding-top:8px;border-top:1px solid var(--border);}
+.v-tog{display:flex;align-items:center;gap:6px;cursor:pointer;}
+.t-sw{width:30px;height:17px;background:var(--surface-dim);border:1px solid var(--border2);border-radius:9px;position:relative;transition:all .18s;flex-shrink:0;}
+.t-sw.on{background:var(--accent);border-color:var(--accent);}
+.t-sw::after{content:"";position:absolute;width:11px;height:11px;background:#fff;border-radius:50%;top:2px;left:2px;transition:transform .18s var(--ease);}
+.t-sw.on::after{transform:translateX(13px);}
+.v-lbl{font-size:11px;font-weight:300;color:var(--ink3);}
+.b-add{display:flex;align-items:center;justify-content:center;gap:7px;background:none;border:1.5px dashed var(--border2);color:var(--accent3);padding:11px;border-radius:10px;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;transition:all .18s;width:100%;}
+.b-add:hover{background:rgba(26,61,43,.06);border-color:var(--accent3);border-style:solid;}
+/* Reviews admin */
+.rv-list{display:flex;flex-direction:column;gap:11px;}
+.rv-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px;}
+.rv-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.rv-stars{display:flex;gap:2px;}
+.rv-star-sm{font-size:13px;color:var(--ink4);}
+.rv-star-sm.lit{color:#d4a017;}
+.rv-name{font-size:13px;font-weight:600;color:var(--ink);}
+.rv-date{font-size:10px;font-weight:300;color:var(--ink4);margin-top:2px;}
+.rv-comment{font-size:13px;font-weight:300;color:var(--ink2);line-height:1.65;font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.rv-cat-scores{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+.rv-cat-s{font-size:10px;color:var(--ink3);background:var(--surface-low);padding:3px 9px;border-radius:20px;border:1px solid var(--border);}
+.rv-empty{text-align:center;padding:44px 20px;color:var(--ink4);font-size:13px;font-weight:300;}
+/* Modals */
+.ov{display:none;position:fixed;inset:0;background:rgba(35,26,15,.65);backdrop-filter:blur(10px);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.ov.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px 28px;width:100%;max-width:340px;text-align:center;box-shadow:0 24px 80px rgba(35,26,15,.15);animation:mIn .26s var(--ease);}
+@keyframes mIn{from{opacity:0;transform:scale(.9) translateY(14px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.m-title{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.m-sub{font-size:11.5px;font-weight:300;color:var(--ink3);margin-bottom:20px;line-height:1.6;}
+.m-inp{width:100%;background:var(--surface-low);border:1.5px solid var(--border2);color:var(--ink);padding:12px;border-radius:10px;font-size:16px;text-align:center;outline:none;margin-bottom:10px;transition:border-color .18s;}
+.m-inp:focus{border-color:var(--accent3);box-shadow:0 0 0 3px rgba(26,61,43,.07);}
+.m-err{font-size:11px;color:#b43c1e;min-height:16px;margin-bottom:8px;}
+.m-primary{width:100%;background:var(--accent);color:#fff8f4;border:none;padding:13px;border-radius:10px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:all .3s var(--ease);}
+.m-primary:hover{background:var(--accent2);transform:translateY(-1px);}
+.m-sec{width:100%;background:none;border:none;color:var(--ink4);padding:10px;font-size:11px;margin-top:5px;transition:color .15s;}
+.m-sec:hover{color:var(--ink3);}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff8f4;font-size:12px;font-weight:600;padding:12px 24px;border-radius:40px;box-shadow:0 8px 32px rgba(26,61,43,.3);opacity:0;transition:all .3s var(--ease);pointer-events:none;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD MODAL -->
+<div class="ov" id="pw-ov">
+  <div class="modal">
+    <div class="m-title">Yönetici Girişi</div>
+    <div class="m-sub">Admin panelinize erişmek için şifrenizi girin.</div>
+    <input type="password" class="m-inp" id="pw-inp" placeholder="••••••••" maxlength="30" autocomplete="off">
+    <div class="m-err" id="pw-err"></div>
+    <button class="m-primary" onclick="checkPw()">Giriş</button>
+    <button class="m-sec" onclick="closePw()">İptal</button>
+  </div>
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="ov" id="img-ov">
+  <div class="modal" style="max-width:400px;">
+    <div class="m-title" style="font-size:17px;margin-bottom:12px;">Fotoğraf Ekle</div>
+    <div id="img-prev" style="width:100%;height:155px;background:var(--surface-low);border-radius:10px;overflow:hidden;margin-bottom:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);">
+      <span style="color:var(--ink4);font-size:12px;font-weight:300;">Fotoğraf seçilmedi</span>
+    </div>
+    <button class="b-add" style="margin-bottom:10px;" onclick="document.getElementById('ffile').click()">
+      <span class="material-icons-round" style="font-size:15px;">upload</span> Bilgisayardan Seç
+    </button>
+    <input type="text" class="fi" id="img-url" placeholder="veya görsel URL'si..." style="margin-bottom:12px;">
+    <div style="display:flex;gap:9px;">
+      <button class="m-sec" style="flex:1;border:1px solid var(--border2);border-radius:10px;padding:10px;" onclick="closeImg()">İptal</button>
+      <button class="m-primary" style="flex:1;" onclick="confirmImg()">Kaydet</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="ffile" style="display:none" accept="image/*" onchange="handleFile(event)">
+<input type="file" id="hero-file" style="display:none" accept="image/*" onchange="handleHeroFile(event)">
+
+<!-- ═══ MENU VIEW ═══ -->
+<div id="menu-view" class="page active">
+  <div class="top-bar">
+    <div class="top-bar-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="122 144 76 22" style="height:22px;width:auto;display:block;color:var(--accent);" aria-label="NOVERA"><path fill-rule="nonzero" fill="currentColor"  d="M 132.605469 148.410156 C 132.605469 148.109375 132.539062 147.820312 132.40625 147.546875 C 132.273438 147.273438 132.066406 147.070312 131.785156 146.9375 L 135.835938 146.9375 C 135.554688 147.070312 135.351562 147.273438 135.226562 147.546875 C 135.105469 147.820312 135.042969 148.109375 135.042969 148.410156 L 135.042969 162.667969 C 135.042969 162.96875 135.105469 163.253906 135.226562 163.519531 C 135.351562 163.78125 135.554688 163.988281 135.835938 164.140625 L 131.785156 164.140625 C 132.066406 163.988281 132.273438 163.78125 132.40625 163.519531 C 132.539062 163.253906 132.605469 162.96875 132.605469 162.667969 C 132.605469 161.570312 132.441406 160.621094 132.105469 159.820312 C 131.773438 159.015625 131.359375 158.296875 130.851562 157.664062 C 130.347656 157.03125 129.796875 156.445312 129.1875 155.90625 C 128.578125 155.371094 128 154.808594 127.449219 154.222656 L 127.449219 162.667969 C 127.449219 162.96875 127.507812 163.253906 127.636719 163.519531 C 127.765625 163.78125 127.976562 163.988281 128.269531 164.140625 L 124.214844 164.140625 C 124.5 163.988281 124.703125 163.78125 124.828125 163.519531 C 124.949219 163.253906 125.011719 162.96875 125.011719 162.667969 L 125.011719 148.410156 C 125.011719 148.109375 124.949219 147.820312 124.828125 147.546875 C 124.703125 147.273438 124.5 147.070312 124.214844 146.9375 L 128.269531 146.9375 C 127.976562 147.070312 127.765625 147.273438 127.636719 147.546875 C 127.507812 147.820312 127.449219 148.109375 127.449219 148.410156 C 127.449219 149.300781 127.589844 150.050781 127.878906 150.664062 C 128.160156 151.277344 128.605469 151.898438 129.214844 152.519531 C 129.765625 153.105469 130.332031 153.667969 130.925781 154.207031 C 131.515625 154.746094 132.070312 155.328125 132.605469 155.949219 Z M 136.402344 155.527344 C 136.402344 154.5625 136.539062 153.566406 136.816406 152.535156 C 137.089844 151.503906 137.507812 150.570312 138.074219 149.730469 C 138.640625 148.890625 139.351562 148.195312 140.203125 147.648438 C 141.050781 147.097656 142.054688 146.824219 143.207031 146.824219 C 144.359375 146.824219 145.359375 147.101562 146.210938 147.660156 C 147.058594 148.21875 147.761719 148.921875 148.320312 149.773438 C 148.878906 150.621094 149.292969 151.5625 149.566406 152.59375 C 149.84375 153.621094 149.980469 154.597656 149.980469 155.527344 C 149.980469 156.46875 149.84375 157.457031 149.566406 158.488281 C 149.292969 159.515625 148.878906 160.457031 148.320312 161.308594 C 147.761719 162.15625 147.058594 162.859375 146.210938 163.417969 C 145.359375 163.976562 144.359375 164.253906 143.207031 164.253906 C 142.035156 164.253906 141.019531 163.976562 140.160156 163.417969 C 139.300781 162.859375 138.589844 162.15625 138.03125 161.308594 C 137.476562 160.457031 137.066406 159.515625 136.800781 158.488281 C 136.535156 157.457031 136.402344 156.46875 136.402344 155.527344 Z M 138.839844 155.527344 C 138.839844 156.148438 138.921875 156.839844 139.082031 157.59375 C 139.242188 158.351562 139.496094 159.054688 139.847656 159.707031 C 140.195312 160.359375 140.644531 160.90625 141.191406 161.351562 C 141.742188 161.792969 142.410156 162.023438 143.207031 162.042969 C 143.886719 162.042969 144.488281 161.855469 145.019531 161.476562 C 145.546875 161.097656 146 160.601562 146.378906 159.988281 C 146.757812 159.375 147.046875 158.679688 147.242188 157.90625 C 147.441406 157.132812 147.542969 156.339844 147.542969 155.527344 C 147.542969 154.730469 147.441406 153.949219 147.242188 153.171875 C 147.046875 152.398438 146.757812 151.703125 146.378906 151.089844 C 146 150.476562 145.546875 149.980469 145.019531 149.601562 C 144.488281 149.222656 143.886719 149.035156 143.207031 149.035156 C 142.769531 149.035156 142.386719 149.167969 142.058594 149.433594 C 141.726562 149.695312 141.5625 150.066406 141.5625 150.539062 C 141.5625 150.894531 141.671875 151.210938 141.886719 151.488281 C 142.105469 151.761719 142.402344 151.898438 142.78125 151.898438 C 142.949219 151.898438 143.109375 151.851562 143.261719 151.757812 L 142.582031 154.648438 C 142.375 154.34375 142.089844 154.136719 141.730469 154.023438 C 140.671875 153.683594 139.925781 153.070312 139.492188 152.179688 C 139.058594 153.277344 138.839844 154.390625 138.839844 155.527344 Z M 150.09375 148.410156 C 150.015625 148.109375 149.878906 147.820312 149.679688 147.546875 C 149.484375 147.273438 149.222656 147.070312 148.902344 146.9375 L 152.953125 146.9375 C 152.710938 147.070312 152.558594 147.273438 152.5 147.546875 C 152.445312 147.820312 152.464844 148.109375 152.558594 148.410156 L 155.25 158.417969 L 155.363281 159.179688 L 155.503906 158.417969 L 158.199219 148.410156 C 158.292969 148.109375 158.3125 147.820312 158.253906 147.546875 C 158.199219 147.273438 158.046875 147.070312 157.800781 146.9375 L 161.855469 146.9375 C 161.53125 147.070312 161.273438 147.273438 161.074219 147.546875 C 160.875 147.820312 160.738281 148.109375 160.664062 148.410156 L 156.808594 162.667969 C 156.714844 162.96875 156.695312 163.257812 156.753906 163.53125 C 156.808594 163.804688 156.960938 164.007812 157.207031 164.140625 L 153.550781 164.140625 C 153.796875 164.007812 153.945312 163.804688 154.003906 163.53125 C 154.058594 163.257812 154.042969 162.96875 153.945312 162.667969 Z M 162.421875 164.140625 C 162.703125 163.988281 162.90625 163.78125 163.03125 163.519531 C 163.152344 163.253906 163.214844 162.96875 163.214844 162.667969 L 163.214844 148.410156 C 163.214844 148.109375 163.152344 147.820312 163.03125 147.546875 C 162.90625 147.273438 162.703125 147.070312 162.421875 146.9375 L 171.121094 146.9375 L 171.632812 150.085938 C 171.253906 149.613281 170.796875 149.320312 170.257812 149.207031 C 169.71875 149.09375 169.175781 149.035156 168.628906 149.035156 L 165.652344 149.035156 L 165.652344 155.128906 L 168.230469 155.128906 C 168.929688 155.128906 169.449219 154.902344 169.789062 154.449219 L 169.394531 157.652344 C 169.222656 157.425781 169.003906 157.253906 168.742188 157.140625 C 168.476562 157.027344 168.183594 156.972656 167.863281 156.972656 L 165.652344 156.972656 L 165.652344 162.042969 L 169.023438 162.042969 C 169.535156 162.042969 170.03125 161.972656 170.511719 161.832031 C 170.992188 161.691406 171.40625 161.410156 171.746094 160.996094 L 171.007812 164.140625 Z M 177.128906 146.9375 C 177.886719 146.9375 178.585938 147.050781 179.226562 147.277344 C 179.871094 147.503906 180.425781 147.832031 180.898438 148.257812 C 181.371094 148.679688 181.742188 149.1875 182.003906 149.773438 C 182.269531 150.359375 182.402344 151.011719 182.402344 151.726562 C 182.402344 152.84375 182.105469 153.886719 181.507812 154.859375 C 180.914062 155.832031 180.132812 156.621094 179.171875 157.226562 L 181.410156 162.667969 C 181.523438 162.96875 181.699219 163.257812 181.933594 163.53125 C 182.171875 163.804688 182.457031 164.007812 182.796875 164.140625 L 178.746094 164.140625 C 178.972656 164.007812 179.09375 163.804688 179.113281 163.53125 C 179.132812 163.257812 179.078125 162.96875 178.945312 162.667969 L 177.058594 158.078125 C 176.621094 158.171875 176.21875 158.21875 175.855469 158.21875 L 175.855469 162.667969 C 175.855469 162.96875 175.917969 163.253906 176.042969 163.519531 C 176.171875 163.78125 176.382812 163.988281 176.675781 164.140625 L 172.625 164.140625 C 172.90625 163.988281 173.109375 163.78125 173.234375 163.519531 C 173.355469 163.253906 173.417969 162.96875 173.417969 162.667969 L 173.417969 148.410156 C 173.417969 148.109375 173.355469 147.820312 173.234375 147.546875 C 173.109375 147.273438 172.90625 147.070312 172.625 146.9375 Z M 175.855469 156.121094 C 176.371094 156.101562 176.871094 155.972656 177.367188 155.738281 C 177.863281 155.5 178.300781 155.183594 178.679688 154.789062 C 179.0625 154.390625 179.367188 153.929688 179.605469 153.398438 C 179.847656 152.871094 179.964844 152.304688 179.964844 151.699219 C 179.964844 150.832031 179.699219 150.167969 179.164062 149.714844 C 178.632812 149.261719 177.945312 149.035156 177.109375 149.035156 L 175.855469 149.035156 Z M 194.929688 162.667969 C 194.984375 162.96875 195.101562 163.257812 195.28125 163.53125 C 195.460938 163.804688 195.710938 164.007812 196.035156 164.140625 L 191.980469 164.140625 C 192.246094 164.007812 192.410156 163.804688 192.476562 163.53125 C 192.542969 163.257812 192.546875 162.96875 192.492188 162.667969 L 191.867188 159.71875 L 187.25 159.71875 L 186.625 162.667969 C 186.566406 162.96875 186.574219 163.257812 186.640625 163.53125 C 186.703125 163.804688 186.871094 164.007812 187.132812 164.140625 L 183.082031 164.140625 C 183.402344 164.007812 183.652344 163.804688 183.832031 163.53125 C 184.011719 163.257812 184.128906 162.96875 184.1875 162.667969 L 187.105469 148.410156 C 187.164062 148.109375 187.160156 147.820312 187.09375 147.546875 C 187.027344 147.273438 186.859375 147.070312 186.597656 146.9375 L 192.519531 146.9375 C 192.253906 147.070312 192.089844 147.273438 192.023438 147.546875 C 191.957031 147.820312 191.953125 148.109375 192.007812 148.410156 Z M 191.5 157.878906 L 189.683594 149.035156 L 189.429688 149.035156 L 187.617188 157.878906 Z M 191.5 157.878906 "/></svg></div>
+    <div class="top-bar-search" id="top-bar-search">
+      <span class="material-icons-round">search</span>
+      <input type="text" id="search-input" placeholder="Ara..." oninput="doSearch(this.value)">
+    </div>
+  </div>
+
+  <!-- Hero Slider -->
+  <div class="hero-slider" id="hero-slider">
+    <div class="hero-slides" id="hero-slides">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <nav class="cat-nav" id="cat-nav"></nav>
+  <div class="menu-body" id="menu-body"></div>
+  <!-- Search Page -->
+  <div class="search-page" id="search-page">
+    <div class="search-input-wrap">
+      <span class="material-icons-round">search</span>
+      <input type="text" id="search-input-main" placeholder="Ürün ara..." oninput="doSearchMain(this.value)" autocomplete="off">
+    </div>
+    <div class="search-results-list" id="search-results-main"></div>
+    <div id="search-cats-wrap">
+      <div class="search-cats-title">Kategoriler</div>
+      <div class="search-cat-grid" id="search-cat-grid"></div>
+    </div>
+  </div>
+  <footer class="menu-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-name"><svg xmlns="http://www.w3.org/2000/svg" viewBox="122 144 76 22" style="height:26px;width:auto;display:block;color:#fff8f4;" aria-label="NOVERA"><path fill-rule="nonzero" fill="currentColor"  d="M 132.605469 148.410156 C 132.605469 148.109375 132.539062 147.820312 132.40625 147.546875 C 132.273438 147.273438 132.066406 147.070312 131.785156 146.9375 L 135.835938 146.9375 C 135.554688 147.070312 135.351562 147.273438 135.226562 147.546875 C 135.105469 147.820312 135.042969 148.109375 135.042969 148.410156 L 135.042969 162.667969 C 135.042969 162.96875 135.105469 163.253906 135.226562 163.519531 C 135.351562 163.78125 135.554688 163.988281 135.835938 164.140625 L 131.785156 164.140625 C 132.066406 163.988281 132.273438 163.78125 132.40625 163.519531 C 132.539062 163.253906 132.605469 162.96875 132.605469 162.667969 C 132.605469 161.570312 132.441406 160.621094 132.105469 159.820312 C 131.773438 159.015625 131.359375 158.296875 130.851562 157.664062 C 130.347656 157.03125 129.796875 156.445312 129.1875 155.90625 C 128.578125 155.371094 128 154.808594 127.449219 154.222656 L 127.449219 162.667969 C 127.449219 162.96875 127.507812 163.253906 127.636719 163.519531 C 127.765625 163.78125 127.976562 163.988281 128.269531 164.140625 L 124.214844 164.140625 C 124.5 163.988281 124.703125 163.78125 124.828125 163.519531 C 124.949219 163.253906 125.011719 162.96875 125.011719 162.667969 L 125.011719 148.410156 C 125.011719 148.109375 124.949219 147.820312 124.828125 147.546875 C 124.703125 147.273438 124.5 147.070312 124.214844 146.9375 L 128.269531 146.9375 C 127.976562 147.070312 127.765625 147.273438 127.636719 147.546875 C 127.507812 147.820312 127.449219 148.109375 127.449219 148.410156 C 127.449219 149.300781 127.589844 150.050781 127.878906 150.664062 C 128.160156 151.277344 128.605469 151.898438 129.214844 152.519531 C 129.765625 153.105469 130.332031 153.667969 130.925781 154.207031 C 131.515625 154.746094 132.070312 155.328125 132.605469 155.949219 Z M 136.402344 155.527344 C 136.402344 154.5625 136.539062 153.566406 136.816406 152.535156 C 137.089844 151.503906 137.507812 150.570312 138.074219 149.730469 C 138.640625 148.890625 139.351562 148.195312 140.203125 147.648438 C 141.050781 147.097656 142.054688 146.824219 143.207031 146.824219 C 144.359375 146.824219 145.359375 147.101562 146.210938 147.660156 C 147.058594 148.21875 147.761719 148.921875 148.320312 149.773438 C 148.878906 150.621094 149.292969 151.5625 149.566406 152.59375 C 149.84375 153.621094 149.980469 154.597656 149.980469 155.527344 C 149.980469 156.46875 149.84375 157.457031 149.566406 158.488281 C 149.292969 159.515625 148.878906 160.457031 148.320312 161.308594 C 147.761719 162.15625 147.058594 162.859375 146.210938 163.417969 C 145.359375 163.976562 144.359375 164.253906 143.207031 164.253906 C 142.035156 164.253906 141.019531 163.976562 140.160156 163.417969 C 139.300781 162.859375 138.589844 162.15625 138.03125 161.308594 C 137.476562 160.457031 137.066406 159.515625 136.800781 158.488281 C 136.535156 157.457031 136.402344 156.46875 136.402344 155.527344 Z M 138.839844 155.527344 C 138.839844 156.148438 138.921875 156.839844 139.082031 157.59375 C 139.242188 158.351562 139.496094 159.054688 139.847656 159.707031 C 140.195312 160.359375 140.644531 160.90625 141.191406 161.351562 C 141.742188 161.792969 142.410156 162.023438 143.207031 162.042969 C 143.886719 162.042969 144.488281 161.855469 145.019531 161.476562 C 145.546875 161.097656 146 160.601562 146.378906 159.988281 C 146.757812 159.375 147.046875 158.679688 147.242188 157.90625 C 147.441406 157.132812 147.542969 156.339844 147.542969 155.527344 C 147.542969 154.730469 147.441406 153.949219 147.242188 153.171875 C 147.046875 152.398438 146.757812 151.703125 146.378906 151.089844 C 146 150.476562 145.546875 149.980469 145.019531 149.601562 C 144.488281 149.222656 143.886719 149.035156 143.207031 149.035156 C 142.769531 149.035156 142.386719 149.167969 142.058594 149.433594 C 141.726562 149.695312 141.5625 150.066406 141.5625 150.539062 C 141.5625 150.894531 141.671875 151.210938 141.886719 151.488281 C 142.105469 151.761719 142.402344 151.898438 142.78125 151.898438 C 142.949219 151.898438 143.109375 151.851562 143.261719 151.757812 L 142.582031 154.648438 C 142.375 154.34375 142.089844 154.136719 141.730469 154.023438 C 140.671875 153.683594 139.925781 153.070312 139.492188 152.179688 C 139.058594 153.277344 138.839844 154.390625 138.839844 155.527344 Z M 150.09375 148.410156 C 150.015625 148.109375 149.878906 147.820312 149.679688 147.546875 C 149.484375 147.273438 149.222656 147.070312 148.902344 146.9375 L 152.953125 146.9375 C 152.710938 147.070312 152.558594 147.273438 152.5 147.546875 C 152.445312 147.820312 152.464844 148.109375 152.558594 148.410156 L 155.25 158.417969 L 155.363281 159.179688 L 155.503906 158.417969 L 158.199219 148.410156 C 158.292969 148.109375 158.3125 147.820312 158.253906 147.546875 C 158.199219 147.273438 158.046875 147.070312 157.800781 146.9375 L 161.855469 146.9375 C 161.53125 147.070312 161.273438 147.273438 161.074219 147.546875 C 160.875 147.820312 160.738281 148.109375 160.664062 148.410156 L 156.808594 162.667969 C 156.714844 162.96875 156.695312 163.257812 156.753906 163.53125 C 156.808594 163.804688 156.960938 164.007812 157.207031 164.140625 L 153.550781 164.140625 C 153.796875 164.007812 153.945312 163.804688 154.003906 163.53125 C 154.058594 163.257812 154.042969 162.96875 153.945312 162.667969 Z M 162.421875 164.140625 C 162.703125 163.988281 162.90625 163.78125 163.03125 163.519531 C 163.152344 163.253906 163.214844 162.96875 163.214844 162.667969 L 163.214844 148.410156 C 163.214844 148.109375 163.152344 147.820312 163.03125 147.546875 C 162.90625 147.273438 162.703125 147.070312 162.421875 146.9375 L 171.121094 146.9375 L 171.632812 150.085938 C 171.253906 149.613281 170.796875 149.320312 170.257812 149.207031 C 169.71875 149.09375 169.175781 149.035156 168.628906 149.035156 L 165.652344 149.035156 L 165.652344 155.128906 L 168.230469 155.128906 C 168.929688 155.128906 169.449219 154.902344 169.789062 154.449219 L 169.394531 157.652344 C 169.222656 157.425781 169.003906 157.253906 168.742188 157.140625 C 168.476562 157.027344 168.183594 156.972656 167.863281 156.972656 L 165.652344 156.972656 L 165.652344 162.042969 L 169.023438 162.042969 C 169.535156 162.042969 170.03125 161.972656 170.511719 161.832031 C 170.992188 161.691406 171.40625 161.410156 171.746094 160.996094 L 171.007812 164.140625 Z M 177.128906 146.9375 C 177.886719 146.9375 178.585938 147.050781 179.226562 147.277344 C 179.871094 147.503906 180.425781 147.832031 180.898438 148.257812 C 181.371094 148.679688 181.742188 149.1875 182.003906 149.773438 C 182.269531 150.359375 182.402344 151.011719 182.402344 151.726562 C 182.402344 152.84375 182.105469 153.886719 181.507812 154.859375 C 180.914062 155.832031 180.132812 156.621094 179.171875 157.226562 L 181.410156 162.667969 C 181.523438 162.96875 181.699219 163.257812 181.933594 163.53125 C 182.171875 163.804688 182.457031 164.007812 182.796875 164.140625 L 178.746094 164.140625 C 178.972656 164.007812 179.09375 163.804688 179.113281 163.53125 C 179.132812 163.257812 179.078125 162.96875 178.945312 162.667969 L 177.058594 158.078125 C 176.621094 158.171875 176.21875 158.21875 175.855469 158.21875 L 175.855469 162.667969 C 175.855469 162.96875 175.917969 163.253906 176.042969 163.519531 C 176.171875 163.78125 176.382812 163.988281 176.675781 164.140625 L 172.625 164.140625 C 172.90625 163.988281 173.109375 163.78125 173.234375 163.519531 C 173.355469 163.253906 173.417969 162.96875 173.417969 162.667969 L 173.417969 148.410156 C 173.417969 148.109375 173.355469 147.820312 173.234375 147.546875 C 173.109375 147.273438 172.90625 147.070312 172.625 146.9375 Z M 175.855469 156.121094 C 176.371094 156.101562 176.871094 155.972656 177.367188 155.738281 C 177.863281 155.5 178.300781 155.183594 178.679688 154.789062 C 179.0625 154.390625 179.367188 153.929688 179.605469 153.398438 C 179.847656 152.871094 179.964844 152.304688 179.964844 151.699219 C 179.964844 150.832031 179.699219 150.167969 179.164062 149.714844 C 178.632812 149.261719 177.945312 149.035156 177.109375 149.035156 L 175.855469 149.035156 Z M 194.929688 162.667969 C 194.984375 162.96875 195.101562 163.257812 195.28125 163.53125 C 195.460938 163.804688 195.710938 164.007812 196.035156 164.140625 L 191.980469 164.140625 C 192.246094 164.007812 192.410156 163.804688 192.476562 163.53125 C 192.542969 163.257812 192.546875 162.96875 192.492188 162.667969 L 191.867188 159.71875 L 187.25 159.71875 L 186.625 162.667969 C 186.566406 162.96875 186.574219 163.257812 186.640625 163.53125 C 186.703125 163.804688 186.871094 164.007812 187.132812 164.140625 L 183.082031 164.140625 C 183.402344 164.007812 183.652344 163.804688 183.832031 163.53125 C 184.011719 163.257812 184.128906 162.96875 184.1875 162.667969 L 187.105469 148.410156 C 187.164062 148.109375 187.160156 147.820312 187.09375 147.546875 C 187.027344 147.273438 186.859375 147.070312 186.597656 146.9375 L 192.519531 146.9375 C 192.253906 147.070312 192.089844 147.273438 192.023438 147.546875 C 191.957031 147.820312 191.953125 148.109375 192.007812 148.410156 Z M 191.5 157.878906 L 189.683594 149.035156 L 189.429688 149.035156 L 187.617188 157.878906 Z M 191.5 157.878906 "/></svg></div>
+          <div class="footer-brand-desc" id="d-footer-desc"></div>
+          <button class="footer-review-btn" onclick="openReview()">
+            <span class="material-icons-round">star</span> Değerlendir
+          </button>
+        </div>
+        <div>
+          <div class="footer-section-label">Konum</div>
+          <div class="footer-address" id="d-footer-address"></div>
+          <div class="footer-map" id="footer-map">
+            <div class="footer-map-placeholder">
+              <span class="material-icons-round">location_on</span>
+              <span>Harita</span>
+            </div>
+          </div>
+          <div class="footer-section-label">Çalışma Saatleri</div>
+          <ul class="footer-hours" id="footer-hours"></ul>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-copy">© 2026 NOVERA Coffee & Dessert. Tüm hakları saklıdır.</div>
+      <button class="admin-ghost" onclick="openPw()">Yönetici Paneli</button>
+    </div>
+  </footer>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bn-btn active" data-tab="menu" onclick="switchBnTab('menu')">
+    <span class="material-icons-round">home</span><span>Menü</span>
+  </button>
+  <button class="bn-btn" data-tab="search" onclick="switchBnTab('search')">
+    <span class="material-icons-round">search</span><span>Ara</span>
+  </button>
+  <button class="bn-btn" data-tab="review" onclick="showPage('review')">
+    <span class="material-icons-round">star</span><span>Puan Ver</span>
+  </button>
+  <button class="bn-btn" data-tab="info" onclick="goInfo()">
+    <span class="material-icons-round">info</span><span>Bilgi</span>
+  </button>
+</nav>
+
+<!-- ═══ REVIEW VIEW ═══ -->
+<div id="review-view" class="page">
+  <div class="review-hero">
+    <div class="r-hero-title">Değerlendirme</div>
+    <div class="r-hero-sub">Deneyiminizi bizimle paylaşın</div>
+  </div>
+  <div class="review-body">
+    <div class="r-success" id="r-success">
+      <div class="r-success-icon">🌿</div>
+      <div class="r-success-title">Teşekkürler!</div>
+      <div class="r-success-sub">Değerlendirmeniz alındı.<br>Görüşleriniz bizim için çok değerli.</div>
+      <button class="footer-review-btn" style="margin-top:22px;display:inline-flex;" onclick="showPage('menu')">Menüye Dön</button>
+    </div>
+    <div id="r-form">
+      <div class="r-card">
+        <div class="r-card-label">Genel Deneyim</div>
+        <div class="star-row" id="main-stars"></div>
+        <div class="star-lbl" id="star-lbl">Deneyiminizi puanlayın</div>
+      </div>
+      <div class="r-card">
+        <div class="r-card-label">Detaylı Puanlama</div>
+        <div class="detail-row"><span class="detail-lbl">Kahve Kalitesi</span><div class="mini-stars" id="ms-kahve"></div></div>
+        <div class="detail-row"><span class="detail-lbl">Servis &amp; Sıcaklık</span><div class="mini-stars" id="ms-servis"></div></div>
+        <div class="detail-row"><span class="detail-lbl">Ambiyans</span><div class="mini-stars" id="ms-ambiyans"></div></div>
+        <div class="detail-row"><span class="detail-lbl">Fiyat / Kalite</span><div class="mini-stars" id="ms-fiyat"></div></div>
+      </div>
+      <div class="r-card">
+        <div class="r-card-label">Yorumunuz</div>
+        <textarea class="r-textarea" id="r-comment" placeholder="Bu ziyaretiniz nasıldı?"></textarea>
+      </div>
+      <div class="r-card">
+        <div class="r-card-label">Adınız (İsteğe Bağlı)</div>
+        <input type="text" class="r-input" id="r-name" placeholder="Adınız">
+      </div>
+      <button class="r-submit" id="r-submit" onclick="submitReview()">Değerlendirmeyi Gönder</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN VIEW ═══ -->
+<div id="admin-view" class="page">
+  <div class="a-topbar">
+    <div class="a-brand">
+      <div class="a-brand-name"><svg xmlns="http://www.w3.org/2000/svg" viewBox="122 144 76 22" style="height:18px;width:auto;display:block;color:var(--accent);" aria-label="NOVERA"><path fill-rule="nonzero" fill="currentColor"  d="M 132.605469 148.410156 C 132.605469 148.109375 132.539062 147.820312 132.40625 147.546875 C 132.273438 147.273438 132.066406 147.070312 131.785156 146.9375 L 135.835938 146.9375 C 135.554688 147.070312 135.351562 147.273438 135.226562 147.546875 C 135.105469 147.820312 135.042969 148.109375 135.042969 148.410156 L 135.042969 162.667969 C 135.042969 162.96875 135.105469 163.253906 135.226562 163.519531 C 135.351562 163.78125 135.554688 163.988281 135.835938 164.140625 L 131.785156 164.140625 C 132.066406 163.988281 132.273438 163.78125 132.40625 163.519531 C 132.539062 163.253906 132.605469 162.96875 132.605469 162.667969 C 132.605469 161.570312 132.441406 160.621094 132.105469 159.820312 C 131.773438 159.015625 131.359375 158.296875 130.851562 157.664062 C 130.347656 157.03125 129.796875 156.445312 129.1875 155.90625 C 128.578125 155.371094 128 154.808594 127.449219 154.222656 L 127.449219 162.667969 C 127.449219 162.96875 127.507812 163.253906 127.636719 163.519531 C 127.765625 163.78125 127.976562 163.988281 128.269531 164.140625 L 124.214844 164.140625 C 124.5 163.988281 124.703125 163.78125 124.828125 163.519531 C 124.949219 163.253906 125.011719 162.96875 125.011719 162.667969 L 125.011719 148.410156 C 125.011719 148.109375 124.949219 147.820312 124.828125 147.546875 C 124.703125 147.273438 124.5 147.070312 124.214844 146.9375 L 128.269531 146.9375 C 127.976562 147.070312 127.765625 147.273438 127.636719 147.546875 C 127.507812 147.820312 127.449219 148.109375 127.449219 148.410156 C 127.449219 149.300781 127.589844 150.050781 127.878906 150.664062 C 128.160156 151.277344 128.605469 151.898438 129.214844 152.519531 C 129.765625 153.105469 130.332031 153.667969 130.925781 154.207031 C 131.515625 154.746094 132.070312 155.328125 132.605469 155.949219 Z M 136.402344 155.527344 C 136.402344 154.5625 136.539062 153.566406 136.816406 152.535156 C 137.089844 151.503906 137.507812 150.570312 138.074219 149.730469 C 138.640625 148.890625 139.351562 148.195312 140.203125 147.648438 C 141.050781 147.097656 142.054688 146.824219 143.207031 146.824219 C 144.359375 146.824219 145.359375 147.101562 146.210938 147.660156 C 147.058594 148.21875 147.761719 148.921875 148.320312 149.773438 C 148.878906 150.621094 149.292969 151.5625 149.566406 152.59375 C 149.84375 153.621094 149.980469 154.597656 149.980469 155.527344 C 149.980469 156.46875 149.84375 157.457031 149.566406 158.488281 C 149.292969 159.515625 148.878906 160.457031 148.320312 161.308594 C 147.761719 162.15625 147.058594 162.859375 146.210938 163.417969 C 145.359375 163.976562 144.359375 164.253906 143.207031 164.253906 C 142.035156 164.253906 141.019531 163.976562 140.160156 163.417969 C 139.300781 162.859375 138.589844 162.15625 138.03125 161.308594 C 137.476562 160.457031 137.066406 159.515625 136.800781 158.488281 C 136.535156 157.457031 136.402344 156.46875 136.402344 155.527344 Z M 138.839844 155.527344 C 138.839844 156.148438 138.921875 156.839844 139.082031 157.59375 C 139.242188 158.351562 139.496094 159.054688 139.847656 159.707031 C 140.195312 160.359375 140.644531 160.90625 141.191406 161.351562 C 141.742188 161.792969 142.410156 162.023438 143.207031 162.042969 C 143.886719 162.042969 144.488281 161.855469 145.019531 161.476562 C 145.546875 161.097656 146 160.601562 146.378906 159.988281 C 146.757812 159.375 147.046875 158.679688 147.242188 157.90625 C 147.441406 157.132812 147.542969 156.339844 147.542969 155.527344 C 147.542969 154.730469 147.441406 153.949219 147.242188 153.171875 C 147.046875 152.398438 146.757812 151.703125 146.378906 151.089844 C 146 150.476562 145.546875 149.980469 145.019531 149.601562 C 144.488281 149.222656 143.886719 149.035156 143.207031 149.035156 C 142.769531 149.035156 142.386719 149.167969 142.058594 149.433594 C 141.726562 149.695312 141.5625 150.066406 141.5625 150.539062 C 141.5625 150.894531 141.671875 151.210938 141.886719 151.488281 C 142.105469 151.761719 142.402344 151.898438 142.78125 151.898438 C 142.949219 151.898438 143.109375 151.851562 143.261719 151.757812 L 142.582031 154.648438 C 142.375 154.34375 142.089844 154.136719 141.730469 154.023438 C 140.671875 153.683594 139.925781 153.070312 139.492188 152.179688 C 139.058594 153.277344 138.839844 154.390625 138.839844 155.527344 Z M 150.09375 148.410156 C 150.015625 148.109375 149.878906 147.820312 149.679688 147.546875 C 149.484375 147.273438 149.222656 147.070312 148.902344 146.9375 L 152.953125 146.9375 C 152.710938 147.070312 152.558594 147.273438 152.5 147.546875 C 152.445312 147.820312 152.464844 148.109375 152.558594 148.410156 L 155.25 158.417969 L 155.363281 159.179688 L 155.503906 158.417969 L 158.199219 148.410156 C 158.292969 148.109375 158.3125 147.820312 158.253906 147.546875 C 158.199219 147.273438 158.046875 147.070312 157.800781 146.9375 L 161.855469 146.9375 C 161.53125 147.070312 161.273438 147.273438 161.074219 147.546875 C 160.875 147.820312 160.738281 148.109375 160.664062 148.410156 L 156.808594 162.667969 C 156.714844 162.96875 156.695312 163.257812 156.753906 163.53125 C 156.808594 163.804688 156.960938 164.007812 157.207031 164.140625 L 153.550781 164.140625 C 153.796875 164.007812 153.945312 163.804688 154.003906 163.53125 C 154.058594 163.257812 154.042969 162.96875 153.945312 162.667969 Z M 162.421875 164.140625 C 162.703125 163.988281 162.90625 163.78125 163.03125 163.519531 C 163.152344 163.253906 163.214844 162.96875 163.214844 162.667969 L 163.214844 148.410156 C 163.214844 148.109375 163.152344 147.820312 163.03125 147.546875 C 162.90625 147.273438 162.703125 147.070312 162.421875 146.9375 L 171.121094 146.9375 L 171.632812 150.085938 C 171.253906 149.613281 170.796875 149.320312 170.257812 149.207031 C 169.71875 149.09375 169.175781 149.035156 168.628906 149.035156 L 165.652344 149.035156 L 165.652344 155.128906 L 168.230469 155.128906 C 168.929688 155.128906 169.449219 154.902344 169.789062 154.449219 L 169.394531 157.652344 C 169.222656 157.425781 169.003906 157.253906 168.742188 157.140625 C 168.476562 157.027344 168.183594 156.972656 167.863281 156.972656 L 165.652344 156.972656 L 165.652344 162.042969 L 169.023438 162.042969 C 169.535156 162.042969 170.03125 161.972656 170.511719 161.832031 C 170.992188 161.691406 171.40625 161.410156 171.746094 160.996094 L 171.007812 164.140625 Z M 177.128906 146.9375 C 177.886719 146.9375 178.585938 147.050781 179.226562 147.277344 C 179.871094 147.503906 180.425781 147.832031 180.898438 148.257812 C 181.371094 148.679688 181.742188 149.1875 182.003906 149.773438 C 182.269531 150.359375 182.402344 151.011719 182.402344 151.726562 C 182.402344 152.84375 182.105469 153.886719 181.507812 154.859375 C 180.914062 155.832031 180.132812 156.621094 179.171875 157.226562 L 181.410156 162.667969 C 181.523438 162.96875 181.699219 163.257812 181.933594 163.53125 C 182.171875 163.804688 182.457031 164.007812 182.796875 164.140625 L 178.746094 164.140625 C 178.972656 164.007812 179.09375 163.804688 179.113281 163.53125 C 179.132812 163.257812 179.078125 162.96875 178.945312 162.667969 L 177.058594 158.078125 C 176.621094 158.171875 176.21875 158.21875 175.855469 158.21875 L 175.855469 162.667969 C 175.855469 162.96875 175.917969 163.253906 176.042969 163.519531 C 176.171875 163.78125 176.382812 163.988281 176.675781 164.140625 L 172.625 164.140625 C 172.90625 163.988281 173.109375 163.78125 173.234375 163.519531 C 173.355469 163.253906 173.417969 162.96875 173.417969 162.667969 L 173.417969 148.410156 C 173.417969 148.109375 173.355469 147.820312 173.234375 147.546875 C 173.109375 147.273438 172.90625 147.070312 172.625 146.9375 Z M 175.855469 156.121094 C 176.371094 156.101562 176.871094 155.972656 177.367188 155.738281 C 177.863281 155.5 178.300781 155.183594 178.679688 154.789062 C 179.0625 154.390625 179.367188 153.929688 179.605469 153.398438 C 179.847656 152.871094 179.964844 152.304688 179.964844 151.699219 C 179.964844 150.832031 179.699219 150.167969 179.164062 149.714844 C 178.632812 149.261719 177.945312 149.035156 177.109375 149.035156 L 175.855469 149.035156 Z M 194.929688 162.667969 C 194.984375 162.96875 195.101562 163.257812 195.28125 163.53125 C 195.460938 163.804688 195.710938 164.007812 196.035156 164.140625 L 191.980469 164.140625 C 192.246094 164.007812 192.410156 163.804688 192.476562 163.53125 C 192.542969 163.257812 192.546875 162.96875 192.492188 162.667969 L 191.867188 159.71875 L 187.25 159.71875 L 186.625 162.667969 C 186.566406 162.96875 186.574219 163.257812 186.640625 163.53125 C 186.703125 163.804688 186.871094 164.007812 187.132812 164.140625 L 183.082031 164.140625 C 183.402344 164.007812 183.652344 163.804688 183.832031 163.53125 C 184.011719 163.257812 184.128906 162.96875 184.1875 162.667969 L 187.105469 148.410156 C 187.164062 148.109375 187.160156 147.820312 187.09375 147.546875 C 187.027344 147.273438 186.859375 147.070312 186.597656 146.9375 L 192.519531 146.9375 C 192.253906 147.070312 192.089844 147.273438 192.023438 147.546875 C 191.957031 147.820312 191.953125 148.109375 192.007812 148.410156 Z M 191.5 157.878906 L 189.683594 149.035156 L 189.429688 149.035156 L 187.617188 157.878906 Z M 191.5 157.878906 "/></svg></div>
+      <div class="a-badge">Admin</div>
+    </div>
+    <div class="a-actions">
+      <button class="a-btn primary" onclick="saveAll()">Kaydet</button>
+      <button class="a-btn" onclick="closeAdmin()">← Menü</button>
+    </div>
+  </div>
+  <div class="a-mob-nav" id="mob-nav"></div>
+  <div class="a-layout">
+    <div class="a-sidebar" id="sidebar"></div>
+    <div class="a-main" id="a-main">
+      <!-- panels injected here by JS -->
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── CLOUD ── */
+const FB_URL='https://novera-menu-default-rtdb.europe-west1.firebasedatabase.app/menu.json';
+const CLD_CLOUD='dpgx00jah';
+const CLD_PRESET='novera';
+
+async function uploadImg(file){
+  const fd=new FormData();
+  fd.append('file',file);fd.append('upload_preset',CLD_PRESET);
+  const r=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
+  const d=await r.json();
+  if(d.secure_url)return d.secure_url;
+  throw new Error('Upload failed');
+}
+async function fbGet(){
+  try{
+    const r=await fetch(FB_URL+'?_='+Date.now(),{cache:'no-store'});
+    if(!r.ok)return null;
+    const d=await r.json();
+    return(d&&d.categories)?d:null;
+  }catch(e){return null;}
+}
+async function fbSet(data){
+  const clean=JSON.parse(JSON.stringify(data));
+  for(const cid in clean.items){
+    clean.items[cid]=(clean.items[cid]||[]).map(it=>{
+      if(it.img&&it.img.startsWith('data:'))return{...it,img:''};
+      return it;
+    });
+  }
+  const r=await fetch(FB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(clean)});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return true;
+}
+
+/* ── DATA ── */
+const STORE='novera_v8';
+const DEF={
+  sub:'Coffee & Dessert',
+  heroImgs:{},
+  footerDesc:'Çayırova, Kocaeli\'nde lüks kahve ve tatlı deneyimi.',
+  footerAddr:'Çayırova, Kocaeli',
+  hours:'Her gün 08:00 – 23:00',
+  password:'veysel1453K',
+  currency:'₺',curpos:'after',accent:'#1a3d2b',
+  categories:[
+    {id:'c1',name:'Sicak Kahve',desc:''},
+    {id:'c2',name:'Soguk Kahve',desc:''},
+    {id:'c3',name:'Alternatif Icecekler',desc:''},
+    {id:'c4',name:'Caylar',desc:''},
+    {id:'c5',name:'Summer Drinks',desc:''},
+    {id:'c6',name:'Gurme',desc:''},
+    {id:'c7',name:'Milkshake',desc:''},
+    {id:'c8',name:'Frappuccino',desc:''},
+    {id:'c9',name:'Tatlilar',desc:''},
+  ],
+  items:{
+    c1:[
+      {id:'i1',name:'Espresso',desc:'',price:'150',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i2',name:'Double Espresso',desc:'',price:'165',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i3',name:'Americano',desc:'',price:'170',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i4',name:'Filtre Kahve',desc:'',price:'175',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i5',name:'Latte',desc:'',price:'180',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'180'},M:{on:true,price:'200'},L:{on:true,price:'220'}}},
+      {id:'i6',name:'Flat White',desc:'',price:'180',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i7',name:'Cappuccino',desc:'',price:'180',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'180'},M:{on:true,price:'200'},L:{on:true,price:'220'}}},
+      {id:'i8',name:'Cortado',desc:'',price:'170',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i9',name:'Mocha',desc:'',price:'200',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'200'},M:{on:true,price:'220'},L:{on:true,price:'240'}}},
+      {id:'i10',name:'White Chocolate Mocha',desc:'',price:'200',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'200'},M:{on:true,price:'220'},L:{on:true,price:'240'}}},
+      {id:'i11',name:'Türk Kahvesi',desc:'',price:'155',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i12',name:'Dibek Kahvesi',desc:'',price:'155',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i13',name:'Damla Sakizli Kahve',desc:'',price:'155',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i14',name:'Double Türk Kahvesi',desc:'',price:'165',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+    c2:[
+      {id:'i20',name:'Ice Americano',desc:'',price:'180',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'180'},M:{on:true,price:'200'},L:{on:true,price:'220'}}},
+      {id:'i21',name:'Ice Latte',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'190'},M:{on:true,price:'210'},L:{on:true,price:'230'}}},
+      {id:'i22',name:'Ice Mocha',desc:'',price:'200',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'200'},M:{on:true,price:'220'},L:{on:true,price:'240'}}},
+      {id:'i23',name:'Ice White Chocolate Mocha',desc:'',price:'200',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'200'},M:{on:true,price:'220'},L:{on:true,price:'240'}}},
+      {id:'i24',name:'Ice Caramel Macchiato',desc:'',price:'200',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'200'},M:{on:true,price:'220'},L:{on:true,price:'240'}}},
+      {id:'i25',name:'Cold Brew',desc:'',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'210'},M:{on:true,price:'230'},L:{on:true,price:'250'}}},
+      {id:'i26',name:'Cold Brew Latte',desc:'',price:'220',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'220'},M:{on:true,price:'240'},L:{on:true,price:'260'}}},
+    ],
+    c3:[
+      {id:'i30',name:'Sahlep',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i31',name:'Findikli Sahlep',desc:'',price:'200',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i32',name:'Fistikli Sahlep',desc:'',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i33',name:'Cikolatali Sahlep',desc:'',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i34',name:'Chai Tea',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i35',name:'Sicak Cikolata',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i36',name:'Sicak Beyaz Cikolata',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i37',name:'Limonata',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i38',name:'Premium Soda',desc:'',price:'90',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i39',name:'Sise Su',desc:'',price:'55',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+    c4:[
+      {id:'i40',name:'Fincan Cay',desc:'',price:'100',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i41',name:'Ihlamur',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i42',name:'Ada Cayi',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i43',name:'Yesil Cay',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i44',name:'Orman Meyveli Cay',desc:'',price:'190',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+    c5:[
+      {id:'i50',name:'Raspberry Acai',desc:'Yaban mersini ve beyaz cay bilesimi, hafif tatli ve ferahlatici bir yaz esintisi sunar.',price:'230',tags:['new'],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i51',name:'White Peach',desc:'Rooibos cayi ve seftali, dogal tatlarıyla dengeli ve ferahlatici bir icim deneyimi yaratir.',price:'230',tags:['new'],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i52',name:'Strawberry Hibiscus',desc:'Cilek ve hibiskus cayi, tatli ve hafif eksi bir dokunusla serinletici bir icim sunar.',price:'230',tags:['new'],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i53',name:'Cool Lime',desc:'Lime nin eksi dokunusu, ferahlatici bir icim sunar; her yudumda taze ve serin bir his.',price:'230',tags:['new'],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i54',name:'Passion Melon',desc:'Carkifelek meyvesinin egzotik aromasi, kavunun ferah tatliligiyla birlesiyor.',price:'230',tags:['new'],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+    c6:[
+      {id:'i60',name:'Tiramisu Latte',desc:'Kahve ve tiramisu kremasinin essis birlesimi, uzeri serpilen kakao ile zarif bir final.',price:'245',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'245'},M:{on:true,price:'265'},L:{on:true,price:'285'}}},
+      {id:'i61',name:'Creme Brulee Latte',desc:'Karamelize esmer sekerin isiltisi, yogun kahveyle bulusuyor.',price:'235',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'235'},M:{on:true,price:'255'},L:{on:true,price:'275'}}},
+      {id:'i62',name:'Matcha Latte',desc:'Seremoni kalitesinde matcha, kremsi ve yogun kivamda.',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:true,price:'210'},M:{on:true,price:'230'},L:{on:true,price:'250'}}},
+      {id:'i63',name:'Matcha with Strawberry Cream',desc:'Alt katta seremoni matcha, ustte cilekli sut kremasinin yogun kopugu.',price:'260',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i64',name:'Blueberry Cinnamon Matcha',desc:'Matcha nin yesil zarafeti, yaban mersininin meyvemsiligiyle bulusuyor, tarcinin sicak dokunusuyla.',price:'240',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+    c7:[
+      {id:'i70',name:'Strawberries Cream',desc:'Cilek aromasiyla hazirlanan, yogun kivamli milkshake. Uzeri krem santi ile servis edilir.',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i71',name:'Chocolate Cream',desc:'Yogun cikolata aromasiyla hazirlanan milkshake. Uzeri krem santi ile servis edilir.',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i72',name:'Italian Caramel Cream',desc:'Karamelin yumusak aromasiyla hazirlanan milkshake. Uzeri krem santi ile servis edilir.',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i73',name:'Oreo Cream',desc:'Oreo biskuvilerinin sutle birlesiminden hazirlanan milkshake. Uzeri krem santi ile servis edilir.',price:'220',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+    c8:[
+      {id:'i80',name:'Espresso Frappuccino',desc:'Yogun espresso ve sutle hazirlanan frappuccino. Uzeri krem santi ile servis edilir.',price:'210',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i81',name:'Chocolate Frappuccino',desc:'Espresso ve cikolata aramasiyla hazirlanan frappuccino. Uzeri krem santi ile servis edilir.',price:'220',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i82',name:'Caramel Frappuccino',desc:'Espresso ve karamel aramasiyla hazirlanan frappuccino. Uzeri krem santi ile servis edilir.',price:'220',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i83',name:'Oreo Frappuccino',desc:'Espresso ve Oreo biskuvileriyle hazirlanan frappuccino. Uzeri krem santi ile servis edilir.',price:'230',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+    c9:[
+      {id:'i90',name:'San Sebastian',desc:'',price:'290',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i91',name:'Frambualzli Cheesecake',desc:'',price:'240',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i92',name:'Limonlu Cheesecake',desc:'',price:'240',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i93',name:'Lotuslu Cheesecake',desc:'',price:'240',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i94',name:'Tiramisu',desc:'',price:'230',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i95',name:'Beyaz Cikolatali Brownie',desc:'',price:'250',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i96',name:'Cikolatali Pasta',desc:'',price:'240',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i97',name:'Kahveli Pasta',desc:'',price:'240',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i98',name:'Coco Star',desc:'',price:'220',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+      {id:'i99',name:'Cikolata Frambuaz Cup',desc:'',price:'240',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}},
+    ],
+  },
+    reviews:[],
+};
+
+let D=JSON.parse(JSON.stringify(DEF));
+const persist=()=>{try{localStorage.setItem(STORE,JSON.stringify(D));}catch(e){}};
+const uid=()=>'x'+Math.random().toString(36).substr(2,8);
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const ensureSizes=it=>{if(!it.sizes)it.sizes={S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}};['S','M','L'].forEach(k=>{if(!it.sizes[k])it.sizes[k]={on:false,price:''};});if(!it.tags)it.tags=[];};
+
+/* ── STAR SVG ── */
+const STAR_SVG=`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path class="star-fill" d="M12 2.5l2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 15.9l-5.25 2.75 1-5.85L3.5 8.65l5.9-.85z" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+
+/* ── THEME ── */
+const PRESETS=[{c:'#1a3d2b'},{c:'#022717'},{c:'#2b4e3b'},{c:'#426651'},{c:'#5c4020'},{c:'#7d5630'},{c:'#1a2d4a'},{c:'#4a1f1f'},{c:'#3d3020'}];
+let cpH=140,cpS=52,cpL=17;
+const hslToHex=(h,s,l)=>{s/=100;l/=100;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;const c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0');};return'#'+f(0)+f(8)+f(4);};
+const hexToHsl=hex=>{let r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h*=60;}return[Math.round(h),Math.round(s*100),Math.round(l*100)];};
+
+function applyAccent(c){
+  const r=document.documentElement;
+  r.style.setProperty('--accent',c);
+  const hx=c.replace('#','');
+  const ri=parseInt(hx.substr(0,2),16)/255;
+  const gi=parseInt(hx.substr(2,2),16)/255;
+  const bi=parseInt(hx.substr(4,2),16)/255;
+  const mx=Math.max(ri,gi,bi),mn=Math.min(ri,gi,bi);
+  let h=0,s=0,l=(mx+mn)/2;
+  if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);if(mx===ri)h=(gi-bi)/d+(gi<bi?6:0);else if(mx===gi)h=(bi-ri)/d+2;else h=(ri-gi)/d+4;h*=60;}
+  const toH=(h2,s2,l2)=>{s2/=100;l2/=100;const a=s2*Math.min(l2,1-l2);const f=n=>{const k=(n+h2/30)%12;const cv=l2-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*cv).toString(16).padStart(2,'0');};return'#'+f(0)+f(8)+f(4);};
+  const sl=Math.round(s*100),ll=Math.round(l*100);
+  const l3=Math.max(ll+20,Math.min(ll*2.5+5,55));
+  r.style.setProperty('--accent2',toH(h,sl,Math.min(ll+8,95)));
+  r.style.setProperty('--accent3',toH(h,Math.max(sl-10,20),l3));
+}
+function updateCpUI(){
+  const hex=hslToHex(cpH,cpS,cpL);
+  const p=document.getElementById('cp-preview'),h=document.getElementById('cp-hex');
+  if(p)p.style.background=hex;if(h)h.value=hex;
+  const ht=document.getElementById('cp-hue');
+  if(ht){const th=document.getElementById('cp-hue-thumb');if(th)th.style.left=(cpH/360*ht.offsetWidth)+'px';}
+  const st=document.getElementById('cp-sat');
+  if(st){st.style.background=`linear-gradient(90deg,hsl(${cpH},0%,${cpL}%),hsl(${cpH},100%,${cpL}%))`;const th=document.getElementById('cp-sat-thumb');if(th)th.style.left=(cpS/100*st.offsetWidth)+'px';}
+  const lt=document.getElementById('cp-lit');
+  if(lt){lt.style.background=`linear-gradient(90deg,hsl(${cpH},${cpS}%,5%),hsl(${cpH},${cpS}%,50%),hsl(${cpH},${cpS}%,95%))`;const th=document.getElementById('cp-lit-thumb');if(th)th.style.left=(cpL/100*lt.offsetWidth)+'px';}
+  document.querySelectorAll('.cp-swatch').forEach(s=>s.classList.toggle('on',s.dataset.c===hex));
+}
+function applyColor(hex){D.accent=hex;applyAccent(hex);updateCpUI();}
+function onHexInput(v){if(/^#[0-9a-fA-F]{6}$/.test(v)){const[h,s,l]=hexToHsl(v);cpH=h;cpS=s;cpL=l;applyColor(v);}}
+function setupTrack(id,fn){
+  const t=document.getElementById(id);if(!t)return;
+  const pct=e=>{const r=t.getBoundingClientRect();const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;return Math.max(0,Math.min(1,x/r.width));};
+  let drag=false;
+  t.addEventListener('mousedown',e=>{drag=true;e.preventDefault();fn(pct(e));});
+  window.addEventListener('mousemove',e=>{if(drag){e.preventDefault();fn(pct(e));}});
+  window.addEventListener('mouseup',()=>drag=false);
+  t.addEventListener('touchstart',e=>{drag=true;e.preventDefault();fn(pct(e));},{passive:false});
+  window.addEventListener('touchmove',e=>{if(drag){e.preventDefault();fn(pct(e));}},{passive:false});
+  window.addEventListener('touchend',()=>drag=false);
+}
+function initColorPicker(){
+  const p=document.getElementById('cp-presets');
+  if(p)p.innerHTML=PRESETS.map(x=>`<div class="cp-swatch${x.c===D.accent?' on':''}" style="background:${x.c}" data-c="${x.c}" onclick="applyColor('${x.c}')"></div>`).join('');
+  setupTrack('cp-hue',pct=>{cpH=Math.round(pct*360);applyColor(hslToHex(cpH,cpS,cpL));});
+  setupTrack('cp-sat',pct=>{cpS=Math.round(pct*100);applyColor(hslToHex(cpH,cpS,cpL));});
+  setupTrack('cp-lit',pct=>{cpL=Math.round(pct*100);applyColor(hslToHex(cpH,cpS,cpL));});
+  const[h,s,l]=hexToHsl(D.accent||'#1a3d2b');cpH=h;cpS=s;cpL=l;
+  setTimeout(updateCpUI,100);
+}
+const fmtP=p=>p?(D.curpos==='before'?(D.currency||'₺')+p:p+(D.currency||'₺')):'';
+
+/* ── PAGES ── */
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById(p+'-view').classList.add('active');
+  window.scrollTo(0,0);
+  document.getElementById('bottom-nav').style.display=p==='admin'?'none':'flex';
+  // Update active state on bottom nav
+  document.querySelectorAll('.bn-btn').forEach(b=>b.classList.remove('active'));
+  if(p==='menu')document.querySelector('.bn-btn[data-tab="menu"]').classList.add('active');
+  if(p==='review')document.querySelector('.bn-btn[data-tab="review"]').classList.add('active');
+  if(p==='review')initReview();
+}
+
+/* ── HERO SLIDER ── */
+let heroSlideIdx=0;
+function buildHeroSlider(){
+  const slides=document.getElementById('hero-slides');
+  if(!slides)return;
+  const cats=D.categories;
+  slides.innerHTML=cats.map((cat,i)=>{
+    const img=D.heroImgs&&D.heroImgs[cat.id];
+    return`<div class="hero-slide" id="hslide-${cat.id}">
+      ${img
+        ?`<img src="${esc(img)}" alt="${esc(cat.name)}">`
+        :`<div class="hero-slide-placeholder"><span class="material-icons-round">add_photo_alternate</span><span>${esc(cat.name)}</span></div>`
+      }
+    </div>`;
+  }).join('');
+}
+function goToSlide(idx){
+  heroSlideIdx=idx;
+  const slides=document.getElementById('hero-slides');
+  if(slides)slides.style.transform=`translateX(-${idx*100}%)`;
+}
+
+/* ── MENU ── */
+function renderMenu(){
+  document.getElementById('d-footer-desc').textContent=D.footerDesc||'';
+  document.getElementById('d-footer-address').textContent=D.footerAddr||'';
+  const fh=document.getElementById('footer-hours');
+  if(fh)fh.innerHTML=`<li><span>Açık</span><span>${esc(D.hours||'')}</span></li>`;
+  applyAccent(D.accent||'#1a3d2b');
+  buildHeroSlider();
+  const nav=document.getElementById('cat-nav'),body=document.getElementById('menu-body');
+  nav.innerHTML='';body.innerHTML='';
+  D.categories.forEach((cat,i)=>{
+    const items=(D.items[cat.id]||[]).filter(it=>it.vis!==false);
+    const tab=document.createElement('button');
+    tab.className='nav-tab'+(i===0?' active':'');
+    tab.textContent=cat.name;
+    tab.onclick=()=>swCat(cat.id,i);
+    nav.appendChild(tab);
+    const sec=document.createElement('div');
+    sec.className='cat-section'+(i===0?' active':'');
+    sec.id='ms-'+cat.id;
+    sec.innerHTML=`<div class="section-head"><div class="sh-line"></div><div class="sh-label">${esc(cat.name)}</div><div class="sh-line"></div></div>`+items.map(renderCard).join('');
+    body.appendChild(sec);
+  });
+  initReveal();
+  goToSlide(0);
+}
+function renderCard(it){
+  const BADGE_MAP={
+    'new':'✦ Yeni','hot':'Popüler','veg':'Vegan',
+    'sweet':'Tatlı','bitter':'Sert & Yoğun','smooth':'Yumuşak İçim',
+    'cold':'Buzlu & Serin','warm':'Sıcacık','strong':'Çift Shot',
+    'fruity':'Meyveli','creamy':'Kremsi','seasonal':'Mevsimlik',
+    'special':'Özel Tarif','nosugar':'Şekersiz','iced':'Ice',
+    'summer':'Yaz Favorisi','classic':'Klasik','signature':'İmza',
+    'bestseller':'Çok Satan','light':'Hafif İçim',
+    'milky':'Sütlü','spiced':'Baharatlı','choco':'Çikolatalı',
+    'caramel':'Karamelli','foamy':'Köpüklü','herbal':'Bitkisel','whipped':'Krem Şantili',
+  };
+  const BADGE_CSS={
+    'new':'badge-new','hot':'badge-hot','veg':'badge-veg',
+    'sweet':'badge-sweet','bitter':'badge-bitter','smooth':'badge-smooth',
+    'cold':'badge-cold','warm':'badge-warm','strong':'badge-strong',
+    'fruity':'badge-fruity','creamy':'badge-creamy','seasonal':'badge-seasonal',
+    'special':'badge-special','nosugar':'badge-nosugar','iced':'badge-iced',
+    'summer':'badge-summer','classic':'badge-classic','signature':'badge-signature',
+    'bestseller':'badge-hot','light':'badge-smooth',
+    'milky':'badge-milky','spiced':'badge-spiced','choco':'badge-choco',
+    'caramel':'badge-caramel','foamy':'badge-foamy','herbal':'badge-herbal','whipped':'badge-whipped',
+  };
+  const tags=(it.tags||[]).map(t=>{
+    const lbl=BADGE_MAP[t];const cls=BADGE_CSS[t]||'badge-new';
+    return lbl?`<span class="badge ${cls}">${lbl}</span>`:'';
+  }).join('');
+  const sizes=it.sizes||{};
+  const activeS=Object.entries(sizes).filter(([,v])=>v.on&&v.price);
+  const iid=it.id;
+  const imgHtml=it.img?`<img src="${esc(it.img)}" alt="" loading="lazy">`:`<div class="item-no-img"><span class="material-icons-round">local_cafe</span></div>`;
+
+  const descBtn=it.desc?`<button class="desc-toggle" onclick="togDesc('${iid}',this)" type="button">Ürün içeriğini gör<span class="material-icons-round">expand_more</span></button>`:'';
+  const descPanel=it.desc?`<div class="desc-panel" id="dp-${iid}"><div class="desc-panel-inner">${esc(it.desc)}</div></div>`:'';
+
+  if(activeS.length){
+    const firstPrice=fmtP(activeS[0][1].price);
+    const opts=activeS.map(([k,v],i)=>{
+      const lbl=k==='S'?'Küçük':k==='M'?'Orta':'Büyük';
+      return`<button class="size-option${i===0?' active':''}" onclick="selectSize(this,'price-${iid}','${fmtP(v.price)}')" type="button"><span class="size-dot"></span><span class="size-lbl">${lbl}</span></button>`;
+    }).join('');
+    return`<div class="item-card">
+      <div class="item-inner">
+        <div class="item-img-wrap">${imgHtml}</div>
+        <div class="item-body">
+          <div class="item-body-top">
+            <div class="item-name">${esc(it.name)}</div>
+            ${tags?`<div class="item-badges" style="margin-top:4px;">${tags}</div>`:''}
+          </div>
+          <div class="item-price-wrap">
+            <div class="item-price" id="price-${iid}">${firstPrice}</div>${descBtn}
+          </div>
+        </div>
+        <div class="size-panel">
+          <div class="size-panel-label">BOY</div>
+          ${opts}
+        </div>
+      </div>${descPanel}
+    </div>`;
+  } else {
+    return`<div class="item-card">
+      <div class="item-inner">
+        <div class="item-img-wrap">${imgHtml}</div>
+        <div class="item-body">
+          <div class="item-body-top">
+            <div class="item-name">${esc(it.name)}</div>
+            ${tags?`<div class="item-badges" style="margin-top:4px;">${tags}</div>`:''}
+          </div>
+          <div class="item-price-wrap">
+            <div class="item-price">${fmtP(it.price)}</div>${descBtn}
+          </div>
+        </div>
+      </div>${descPanel}
+    </div>`;
+  }
+}
+function selectSize(btn, priceId, price){
+  const wrap=btn.closest('.size-panel');
+  if(wrap)wrap.querySelectorAll('.size-option').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const priceEl=document.getElementById(priceId);
+  if(priceEl)priceEl.textContent=price;
+}
+function togDesc(iid, btn){
+  const panel=document.getElementById('dp-'+iid);
+  if(!panel)return;
+  const isOpen=panel.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  const sizePanel=btn.closest('.item-card')?.querySelector('.size-panel');
+  if(sizePanel) sizePanel.classList.toggle('desc-open', isOpen);
+}
+function initReveal(){
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.05});
+  document.querySelectorAll('.item-card:not(.visible)').forEach(el=>obs.observe(el));
+}
+function swCat(id,idx){
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',D.categories[i]&&D.categories[i].id===id));
+  document.querySelectorAll('.cat-section').forEach(s=>s.classList.toggle('active',s.id==='ms-'+id));
+  goToSlide(idx);
+  initReveal();
+  // Scroll the active tab into view
+  const activeTab=document.querySelector('.nav-tab.active');
+  if(activeTab){
+    activeTab.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  }
+}
+
+
+/* ── SEARCH ── */
+function switchBnTab(tab){
+  if(!document.getElementById('menu-view').classList.contains('active')){
+    document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+    document.getElementById('menu-view').classList.add('active');
+    document.getElementById('bottom-nav').style.display='flex';
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('.bn-btn').forEach(b=>b.classList.remove('active'));
+  const sp=document.getElementById('search-page');
+  const mb=document.getElementById('menu-body');
+  const cn=document.getElementById('cat-nav');
+  const hs=document.getElementById('hero-slider');
+  const topSearch=document.getElementById('top-bar-search');
+  if(tab==='menu'){
+    document.querySelector('.bn-btn[data-tab="menu"]').classList.add('active');
+    mb.style.display='block';
+    cn.style.display='flex';
+    if(hs)hs.style.display='block';
+    if(sp)sp.classList.remove('active');
+    if(topSearch)topSearch.style.display='flex';
+    // Reset search input and show categories
+    const inp=document.getElementById('search-input-main');
+    if(inp)inp.value='';
+    const res=document.getElementById('search-results-main');
+    if(res)res.innerHTML='';
+    const cw=document.getElementById('search-cats-wrap');
+    if(cw)cw.style.display='block';
+    window.scrollTo(0,0);
+  } else if(tab==='search'){
+    document.querySelector('.bn-btn[data-tab="search"]').classList.add('active');
+    mb.style.display='none';
+    cn.style.display='none';
+    if(hs)hs.style.display='none';
+    if(topSearch)topSearch.style.display='none';
+    if(sp){sp.classList.add('active');buildSearchCats();}
+    setTimeout(()=>document.getElementById('search-input-main').focus(),100);
+    window.scrollTo(0,0);
+  }
+}
+function doSearch(q){
+  q=q.toLowerCase().trim();
+  const sr=document.getElementById('search-results');
+  const mb=document.getElementById('menu-body');
+  const cn=document.getElementById('cat-nav');
+  if(!q){
+    sr.classList.remove('active');
+    mb.style.display='block';cn.style.display='flex';
+    return;
+  }
+  sr.classList.add('active');mb.style.display='none';cn.style.display='none';
+  let found=[];
+  D.categories.forEach(cat=>(D.items[cat.id]||[]).filter(it=>it.vis!==false&&(it.name.toLowerCase().includes(q)||it.desc.toLowerCase().includes(q))).forEach(it=>found.push(it)));
+  document.getElementById('search-list').innerHTML=found.length?found.map(renderCard).join(''):'<div class="search-empty">Sonuç bulunamadı</div>';
+  initReveal();
+}
+function scrollToFooter(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});}
+
+function buildSearchCats(){
+  const grid=document.getElementById('search-cat-grid');
+  if(!grid)return;
+  grid.innerHTML=D.categories.map(cat=>`
+    <div class="search-cat-card" onclick="goToCategory('${cat.id}')">
+      <div class="search-cat-name">${esc(cat.name)}</div>
+      ${cat.desc?`<div class="search-cat-desc">${esc(cat.desc)}</div>`:''}
+    </div>`).join('');
+}
+
+function goToCategory(id){
+  switchBnTab('menu');
+  const idx=D.categories.findIndex(c=>c.id===id);
+  if(idx>=0) swCat(id,idx);
+}
+
+function doSearchMain(q){
+  q=q.trim().toLowerCase();
+  const resultsEl=document.getElementById('search-results-main');
+  const catsWrap=document.getElementById('search-cats-wrap');
+  if(!q){
+    resultsEl.innerHTML='';
+    if(catsWrap)catsWrap.style.display='block';
+    return;
+  }
+  if(catsWrap)catsWrap.style.display='none';
+  let found=[];
+  D.categories.forEach(cat=>(D.items[cat.id]||[]).filter(it=>it.vis!==false&&(it.name.toLowerCase().includes(q)||(it.desc||'').toLowerCase().includes(q))).forEach(it=>found.push(it)));
+  if(!found.length){
+    resultsEl.innerHTML='<div class="search-empty">Sonuç bulunamadı</div>';
+    return;
+  }
+  resultsEl.innerHTML=found.map(renderCard).join('');
+  initReveal();
+}
+function goInfo(){
+  // If not on menu page, go to menu first then scroll
+  if(!document.getElementById('menu-view').classList.contains('active')){
+    showPage('menu');
+    setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),100);
+  } else {
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  }
+  document.querySelectorAll('.bn-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.bn-btn[data-tab="info"]').classList.add('active');
+}
+
+/* ── REVIEW ── */
+const STAR_LABELS=['','Kötü','İdare eder','İyi','Çok iyi','Mükemmel ✦'];
+let rD={main:0,cats:{kahve:0,servis:0,ambiyans:0,fiyat:0}};
+function openReview(){rD={main:0,cats:{kahve:0,servis:0,ambiyans:0,fiyat:0}};showPage('review');}
+function initReview(){
+  // Main stars
+  const ms=document.getElementById('main-stars');
+  if(ms)ms.innerHTML=[1,2,3,4,5].map(v=>`<button class="star-btn" data-v="${v}" onclick="setMain(${v})">${STAR_SVG}</button>`).join('');
+  // Mini stars
+  ['kahve','servis','ambiyans','fiyat'].forEach(cat=>{
+    const row=document.getElementById('ms-'+cat);
+    if(row)row.innerHTML=[1,2,3,4,5].map(v=>`<button class="mini-star-btn" data-v="${v}" onclick="setMini('${cat}',${v})">${STAR_SVG}</button>`).join('');
+  });
+  document.getElementById('star-lbl').textContent='Deneyiminizi puanlayın';
+  ['r-comment','r-name','r-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('r-success').style.display='none';
+  document.getElementById('r-form').style.display='block';
+}
+function setMain(v){
+  rD.main=v;
+  document.querySelectorAll('#main-stars .star-btn').forEach(b=>{
+    const bv=parseInt(b.dataset.v);
+    b.classList.toggle('lit',bv<=v);
+  });
+  document.getElementById('star-lbl').textContent=STAR_LABELS[v]||'';
+  vib(12);
+}
+function setMini(cat,v){
+  rD.cats[cat]=v;
+  const row=document.getElementById('ms-'+cat);
+  if(row)row.querySelectorAll('.mini-star-btn').forEach(b=>{
+    b.classList.toggle('lit',parseInt(b.dataset.v)<=v);
+  });
+  vib(8);
+}
+function vib(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
+async function submitReview(){
+  if(!rD.main){showToast('Lütfen genel puan seçin');return;}
+  const btn=document.getElementById('r-submit');btn.disabled=true;btn.textContent='Gönderiliyor...';
+  const rev={id:uid(),date:new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'}),name:(document.getElementById('r-name').value||'').trim()||'Anonim',email:'',main:rD.main,cats:{...rD.cats},comment:(document.getElementById('r-comment').value||'').trim()};
+  if(!D.reviews)D.reviews=[];D.reviews.unshift(rev);persist();
+  vib(60);
+  document.getElementById('r-form').style.display='none';
+  document.getElementById('r-success').style.display='block';
+  btn.disabled=false;btn.textContent='Değerlendirmeyi Gönder';
+}
+
+/* ── PASSWORD ── */
+function openPw(){
+  document.getElementById('pw-ov').classList.add('open');
+  document.getElementById('pw-inp').value='';
+  document.getElementById('pw-err').textContent='';
+  setTimeout(()=>document.getElementById('pw-inp').focus(),80);
+}
+function closePw(){document.getElementById('pw-ov').classList.remove('open');}
+document.getElementById('pw-inp').addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
+function checkPw(){
+  const v=document.getElementById('pw-inp').value;
+  if(v===D.password){
+    closePw();
+    openAdmin();
+  }else{
+    document.getElementById('pw-err').textContent='Hatalı şifre.';
+    document.getElementById('pw-inp').value='';
+    document.getElementById('pw-inp').focus();
+  }
+}
+
+/* ══════════════════════════════════════════
+   ADMIN — completely rebuilt, no CSS conflicts
+══════════════════════════════════════════ */
+function openAdmin(){
+  showPage('admin');
+  buildAdminUI();
+}
+function closeAdmin(){showPage('menu');renderMenu();}
+
+function buildAdminUI(){
+  buildSidebar();
+  buildMobNav();
+  showPanel('settings');
+}
+
+/* Build all panels fresh into a-main */
+function showPanel(p){
+  const main=document.getElementById('a-main');
+  // Update active states
+  document.querySelectorAll('.asb-btn').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  document.querySelectorAll('.a-mob-btn').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  // Render the correct panel
+  if(p==='settings') main.innerHTML=buildSettingsPanel();
+  else if(p==='categories') main.innerHTML=buildCategoriesPanel();
+  else if(p==='reviews') main.innerHTML=buildReviewsPanel();
+  else if(p.startsWith('items-')){
+    const cid=p.replace('items-','');
+    main.innerHTML=buildItemsPanel(cid);
+  }
+  // Init color picker if settings
+  if(p==='settings') initColorPicker();
+  window.scrollTo(0,0);
+}
+
+function buildSidebar(){
+  document.getElementById('sidebar').innerHTML=`
+    <div class="asb-sec">Genel</div>
+    <button class="asb-btn" data-p="settings" onclick="showPanel('settings')"><span class="asb-ico material-icons-round">settings</span><span class="asb-lbl">Ayarlar</span></button>
+    <button class="asb-btn" data-p="categories" onclick="showPanel('categories')"><span class="asb-ico material-icons-round">list</span><span class="asb-lbl">Kategoriler</span><span class="asb-cnt">${D.categories.length}</span></button>
+    <div class="asb-sec" style="margin-top:10px;">Ürünler</div>
+    ${D.categories.map(c=>`<button class="asb-btn" data-p="items-${c.id}" onclick="showPanel('items-${c.id}')"><span class="asb-ico material-icons-round">restaurant_menu</span><span class="asb-lbl">${esc(c.name)}</span><span class="asb-cnt">${(D.items[c.id]||[]).length}</span></button>`).join('')}
+    <div class="asb-sec" style="margin-top:10px;">Geri Bildirim</div>
+    <button class="asb-btn" data-p="reviews" onclick="showPanel('reviews')"><span class="asb-ico material-icons-round">star</span><span class="asb-lbl">Değerlendirmeler</span><span class="asb-cnt">${(D.reviews||[]).length}</span></button>
+  `;
+}
+function buildMobNav(){
+  document.getElementById('mob-nav').innerHTML=`
+    <button class="a-mob-btn" data-p="settings" onclick="showPanel('settings')">Ayarlar</button>
+    <button class="a-mob-btn" data-p="categories" onclick="showPanel('categories')">Kategoriler</button>
+    ${D.categories.map(c=>`<button class="a-mob-btn" data-p="items-${c.id}" onclick="showPanel('items-${c.id}')">${esc(c.name)}</button>`).join('')}
+    <button class="a-mob-btn" data-p="reviews" onclick="showPanel('reviews')">Değerlendirmeler</button>
+  `;
+}
+
+function buildSettingsPanel(){
+  const heroImgs=D.heroImgs||{};
+  const heroSlides=D.categories.map((cat,i)=>`
+    <div style="margin-bottom:12px;">
+      <div class="flbl" style="margin-bottom:6px;">${i+1}. ${esc(cat.name)}</div>
+      <div class="hero-upload-wrap" onclick="triggerHeroUpload('${cat.id}')">
+        ${heroImgs[cat.id]
+          ?`<img src="${esc(heroImgs[cat.id])}" class="hero-upload-prev"><div class="hero-upload-text">Değiştirmek için tıkla</div>`
+          :`<span class="material-icons-round" style="font-size:24px;color:var(--ink4);margin-bottom:6px;display:block;">add_photo_alternate</span><div class="hero-upload-text">${esc(cat.name)} görseli ekle</div>`
+        }
+      </div>
+    </div>
+  `).join('');
+
+  return`<div style="padding:0">
+    <div class="a-panel-title">Genel Ayarlar</div>
+    <div class="a-panel-sub">Kafe bilgileri, görünüm ve güvenlik</div>
+
+    <div class="fsep" style="margin-top:0;"></div>
+    <div class="fsub">Kategori Görselleri</div>
+    <div class="fhint">Her kategoriye ait hero görsel — kategoriye tıklayınca bu görsel gösterilir</div>
+    ${heroSlides}
+
+    <div class="fsep"></div>
+    <div class="fgrid">
+      <div class="fg span2"><label class="flbl">Footer Açıklama</label><input class="fi" id="s-footer-desc" value="${esc(D.footerDesc||'')}" placeholder="Kafe açiklamasi" oninput="D.footerDesc=this.value"></div>
+      <div class="fg span2"><label class="flbl">Footer Adres</label><input class="fi" id="s-footer-addr" value="${esc(D.footerAddr||'')}" placeholder="Cayirova, Kocaeli" oninput="D.footerAddr=this.value"></div>
+      <div class="fg span2"><label class="flbl">Çalışma Saatleri</label><input class="fi" id="s-hours" value="${esc(D.hours||'')}" placeholder="Her gun 08:00 - 23:00" oninput="D.hours=this.value"></div>
+    </div>
+
+    <div class="fsep"></div>
+    <div class="fsub">Para Birimi</div><div class="fhint">Fiyatlarda görünecek sembol</div>
+    <div class="fgrid">
+      <div class="fg"><label class="flbl">Sembol</label><input class="fi" id="s-cur" value="${esc(D.currency||'₺')}" maxlength="5"></div>
+      <div class="fg"><label class="flbl">Konum</label>
+        <select class="fi fsel" id="s-curpos">
+          <option value="after" ${D.curpos==='after'?'selected':''}>Sonra — 250₺</option>
+          <option value="before" ${D.curpos==='before'?'selected':''}>Önce — ₺250</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fsep"></div>
+    <div class="fsub">Renk Teması</div><div class="fhint">Sürükle veya hex kodu yaz</div>
+    <div class="cp-preview-row">
+      <div class="cp-preview" id="cp-preview"></div>
+      <div>
+        <input type="text" class="cp-hex-input" id="cp-hex" value="${esc(D.accent||'#1a3d2b')}" maxlength="7" oninput="onHexInput(this.value)">
+        <div class="cp-label" style="margin-top:4px;">Hex kodu</div>
+      </div>
+    </div>
+    <div class="cp-track-wrap"><div class="cp-track-label">Renk (Hue)</div><div class="cp-hue-track" id="cp-hue"><div class="cp-thumb" id="cp-hue-thumb"></div></div></div>
+    <div class="cp-track-wrap"><div class="cp-track-label">Doygunluk</div><div class="cp-sat-track" id="cp-sat"><div class="cp-thumb" id="cp-sat-thumb"></div></div></div>
+    <div class="cp-track-wrap"><div class="cp-track-label">Parlaklık</div><div class="cp-lit-track" id="cp-lit"><div class="cp-thumb" id="cp-lit-thumb"></div></div></div>
+    <div class="cp-presets" id="cp-presets"></div>
+
+    <div class="fsep"></div>
+    <div class="fsub">Güvenlik</div><div class="fhint">Admin şifresini değiştir</div>
+    <div class="fgrid">
+      <div class="fg"><label class="flbl">Yeni Şifre</label><input type="password" class="fi" id="s-pw" placeholder="Boş = değişmez"></div>
+      <div class="fg"><label class="flbl">Onayla</label><input type="password" class="fi" id="s-pw2" placeholder="Tekrar gir"></div>
+    </div>
+    <div style="height:20px;"></div>
+  </div>`;
+}
+
+function buildCategoriesPanel(){
+  return`<div>
+    <div class="a-panel-title">Kategoriler</div>
+    <div class="a-panel-sub">Düzenle, yeniden adlandır veya sil</div>
+    <div class="c-list" id="clist">
+      ${D.categories.map((cat,i)=>`
+        <div class="c-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;align-items:center;gap:9px;">
+            <span class="c-drag">⠿</span>
+            <input class="c-name" value="${esc(cat.name)}" placeholder="Kategori adı" oninput="D.categories[${i}].name=this.value;buildSidebar();buildMobNav();">
+            <button class="b-ico go" onclick="showPanel('items-${cat.id}')">→</button>
+            <button class="b-ico" onclick="delCat('${cat.id}')">✕</button>
+          </div>
+          <input class="af" value="${esc(cat.desc||'')}" placeholder="Açıklama (isteğe bağlı)" oninput="D.categories[${i}].desc=this.value;">
+        </div>`).join('')}
+    </div>
+    <button class="b-add" onclick="addCat()"><span class="material-icons-round" style="font-size:15px;">add</span> Yeni Kategori Ekle</button>
+  </div>`;
+}
+
+function buildItemsPanel(cid){
+  const cat=D.categories.find(c=>c.id===cid);
+  if(!cat)return`<div class="a-panel-title">Kategori bulunamadı</div>`;
+  const items=D.items[cid]||[];
+  return`<div>
+    <div class="a-panel-title">${esc(cat.name)}</div>
+    <div class="a-panel-sub">Fotoğraf, boyut fiyatları ve açıklamaları düzenle</div>
+    <div class="i-grid" id="grid-${cid}">
+      ${items.map(it=>itemCardHTML(cid,it)).join('')}
+    </div>
+    <button class="b-add" onclick="addItem('${cid}')"><span class="material-icons-round" style="font-size:15px;">add</span> Yeni Ürün Ekle</button>
+  </div>`;
+}
+
+function itemCardHTML(cid,it){
+  ensureSizes(it);
+  const on=it.vis!==false;
+  const sizeRows=['S','M','L'].map(k=>`
+    <div class="size-row">
+      <span class="size-row-lbl">${k==='S'?'Küçük':k==='M'?'Orta':'Büyük'}</span>
+      <div class="size-toggle${it.sizes[k].on?' on':''}" onclick="togSize('${cid}','${it.id}','${k}')"></div>
+      <input class="size-price-input" placeholder="Fiyat" value="${esc(it.sizes[k].price)}" ${!it.sizes[k].on?'disabled':''} oninput="upSize('${cid}','${it.id}','${k}',this.value)">
+    </div>`).join('');
+  return`<div class="ai-card" id="ic-${it.id}">
+    <div class="ai-img" onclick="openImg('${cid}','${it.id}')">
+      ${it.img?`<img src="${esc(it.img)}" alt="">`:`<div class="ai-img-ph"><span class="material-icons-round">add_photo_alternate</span></div>`}
+      <div class="ai-img-ov"><span class="material-icons-round" style="font-size:20px;color:#fff8f4;">image</span><span class="ai-img-ov-t">${it.img?'Değiştir':'Ekle'}</span></div>
+    </div>
+    <div class="ai-body"><div class="ai-inps">
+      <input class="af" placeholder="Ürün adı" value="${esc(it.name)}" oninput="upf('${cid}','${it.id}','name',this.value)">
+      <input class="af" placeholder="Açıklama" value="${esc(it.desc||'')}" oninput="upf('${cid}','${it.id}','desc',this.value)">
+      <input class="af" placeholder="Tekil fiyat (boyut yoksa)" value="${esc(it.price||'')}" oninput="upf('${cid}','${it.id}','price',this.value)">
+      <div class="size-pricing"><div class="size-pricing-label">Boyut Seçenekleri</div>${sizeRows}</div>
+      <div class="tag-row">
+        ${['new','hot','bestseller','signature','smooth','bitter','sweet','cold','creamy','fruity','strong','summer','classic','seasonal','special','light','nosugar','veg','milky','spiced','choco','caramel','foamy','herbal','whipped'].map(tag=>{
+          const labels={new:'Yeni',hot:'Popüler',bestseller:'Çok Satan',signature:'İmza',smooth:'Yumuşak',bitter:'Sert & Yoğun',sweet:'Tatlı',cold:'Buzlu',creamy:'Kremsi',fruity:'Meyveli',strong:'Çift Shot',summer:'Yaz Favorisi',classic:'Klasik',seasonal:'Mevsimlik',special:'Özel Tarif',light:'Hafif',nosugar:'Şekersiz',veg:'Vegan',milky:'Sütlü',spiced:'Baharatlı',choco:'Çikolatalı',caramel:'Karamelli',foamy:'Köpüklü',herbal:'Bitkisel',whipped:'Krem Şantili'};
+          const active=(it.tags||[]).includes(tag)?' ton':'';
+          return`<button class="ttog${active}" onclick="togTag('${cid}','${it.id}','${tag}',this)">${labels[tag]}</button>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="card-foot">
+      <div class="v-tog" onclick="togVis('${cid}','${it.id}')">
+        <div class="t-sw${on?' on':''}"></div>
+        <span class="v-lbl">${on?'Görünür':'Gizli'}</span>
+      </div>
+      <button class="b-ico" onclick="delItem('${cid}','${it.id}')">🗑</button>
+    </div></div></div>`;
+}
+
+function buildReviewsPanel(){
+  const reviews=D.reviews||[];
+  return`<div>
+    <div class="a-panel-title">Değerlendirmeler</div>
+    <div class="a-panel-sub">Müşterilerin yorumları ve puanları</div>
+    <div class="rv-list">
+      ${reviews.length?reviews.map(r=>{
+        const stars=[1,2,3,4,5].map(v=>`<span class="rv-star-sm${v<=r.main?' lit':''}"> ${v<=r.main?'★':'☆'}</span>`).join('');
+        const cats=Object.entries(r.cats||{}).filter(([,v])=>v>0).map(([k,v])=>`<span class="rv-cat-s">${k}: ${v}/5</span>`).join('');
+        return`<div class="rv-item"><div class="rv-head"><div><div class="rv-name">${esc(r.name)}</div><div class="rv-date">${esc(r.date)}</div></div><div class="rv-stars">${stars}</div></div>${cats?`<div class="rv-cat-scores">${cats}</div>`:''}${r.comment?`<div class="rv-comment">${esc(r.comment)}</div>`:''}</div>`;
+      }).join(''):'<div class="rv-empty">Henüz değerlendirme yok.</div>'}
+    </div>
+  </div>`;
+}
+
+/* Cat & item helpers */
+function addCat(){
+  const id=uid();
+  D.categories.push({id,name:'Yeni Kategori'});
+  D.items[id]=[];
+  if(!D.heroImgs)D.heroImgs={};
+  buildSidebar();buildMobNav();
+  showPanel('categories');
+}
+function delCat(id){
+  if(!confirm('Bu kategori ve tüm ürünleri silinecek.'))return;
+  D.categories=D.categories.filter(c=>c.id!==id);
+  delete D.items[id];
+  if(D.heroImgs)delete D.heroImgs[id];
+  buildSidebar();buildMobNav();showPanel('categories');
+}
+function upf(cid,iid,f,v){const it=(D.items[cid]||[]).find(x=>x.id===iid);if(it)it[f]=v;}
+function upSize(cid,iid,k,v){const it=(D.items[cid]||[]).find(x=>x.id===iid);if(it){ensureSizes(it);it.sizes[k].price=v;}}
+function togSize(cid,iid,k){
+  const it=(D.items[cid]||[]).find(x=>x.id===iid);if(!it)return;
+  ensureSizes(it);it.sizes[k].on=!it.sizes[k].on;
+  showPanel('items-'+cid);
+}
+function togTag(cid,iid,tag,btn){
+  const it=(D.items[cid]||[]).find(x=>x.id===iid);if(!it)return;
+  const i=(it.tags||[]).indexOf(tag);
+  if(i>-1){it.tags.splice(i,1);btn.classList.remove('ton');}
+  else{if(!it.tags)it.tags=[];it.tags.push(tag);btn.classList.add('ton');}
+}
+function togVis(cid,iid){
+  const it=(D.items[cid]||[]).find(x=>x.id===iid);if(!it)return;
+  it.vis=it.vis===false?true:false;
+  showPanel('items-'+cid);
+}
+function addItem(cid){
+  const id=uid();
+  if(!D.items[cid])D.items[cid]=[];
+  D.items[cid].push({id,name:'',desc:'',price:'',tags:[],img:'',vis:true,sizes:{S:{on:false,price:''},M:{on:false,price:''},L:{on:false,price:''}}});
+  buildSidebar();buildMobNav();
+  showPanel('items-'+cid);
+}
+function delItem(cid,iid){
+  if(!confirm('Bu ürünü silmek istiyor musunuz?'))return;
+  D.items[cid]=(D.items[cid]||[]).filter(x=>x.id!==iid);
+  buildSidebar();buildMobNav();
+  showPanel('items-'+cid);
+}
+
+/* Image upload */
+let _ic=null,_ii=null,_id=null;
+function openImg(cid,iid){
+  _ic=cid;_ii=iid;_id=null;
+  const it=(D.items[cid]||[]).find(x=>x.id===iid);
+  const prev=document.getElementById('img-prev');
+  document.getElementById('img-url').value=it&&it.img?it.img:'';
+  prev.innerHTML=it&&it.img?`<img src="${esc(it.img)}" style="width:100%;height:100%;object-fit:cover;">`:'<span style="color:var(--ink4);font-size:12px;font-weight:300;">Fotoğraf seçilmedi</span>';
+  document.getElementById('img-ov').classList.add('open');
+}
+function closeImg(){document.getElementById('img-ov').classList.remove('open');_ic=_ii=_id=null;}
+async function handleFile(e){
+  const f=e.target.files[0];if(!f)return;
+  const prev=document.getElementById('img-prev');
+  prev.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--ink3);font-size:12px;gap:8px;"><span style="animation:spin 1s linear infinite;display:inline-block">⟳</span> Yükleniyor...</div>';
+  try{const url=await uploadImg(f);_id=url;prev.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;document.getElementById('img-url').value='';}
+  catch(err){prev.innerHTML='<span style="color:#b43c1e;font-size:12px;padding:10px;">Yükleme başarısız</span>';}
+  e.target.value='';
+}
+document.getElementById('img-url').addEventListener('input',function(){
+  const u=this.value.trim();if(!u)return;_id=null;
+  document.getElementById('img-prev').innerHTML=`<img src="${esc(u)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=color:#b43c1e;font-size:12px;padding:10px>URL geçersiz</span>'">`;
+});
+function confirmImg(){
+  const src=_id||document.getElementById('img-url').value.trim()||'';
+  if(_ic&&_ii){
+    const it=(D.items[_ic]||[]).find(x=>x.id===_ii);
+    if(it)it.img=src;
+  }
+  closeImg();
+  if(_ic)showPanel('items-'+_ic);
+}
+
+/* Hero image upload per category */
+let _heroUploadCid=null;
+function triggerHeroUpload(cid){
+  _heroUploadCid=cid;
+  document.getElementById('hero-file').click();
+}
+async function handleHeroFile(e){
+  const f=e.target.files[0];if(!f)return;
+  showToast('⏳ Görsel yükleniyor...');
+  try{
+    const url=await uploadImg(f);
+    if(!D.heroImgs)D.heroImgs={};
+    D.heroImgs[_heroUploadCid]=url;
+    showToast('✓ Görsel yüklendi');
+    showPanel('settings');
+  }catch(err){showToast('⚠ Yükleme başarısız');}
+  e.target.value='';
+}
+
+/* Save */
+function saveAll(){
+  const get=id=>{const el=document.getElementById(id);return el?el.value:'';};
+  const fd=get('s-footer-desc');if(fd)D.footerDesc=fd;
+  const fa=get('s-footer-addr');if(fa)D.footerAddr=fa;
+  const fh=get('s-hours');if(fh)D.hours=fh;
+  D.currency=get('s-cur')||'₺';
+  D.curpos=get('s-curpos')||'after';
+  const p1=get('s-pw'),p2=get('s-pw2');
+  if(p1.trim()){if(p1!==p2){alert('Şifreler eşleşmiyor!');return;}D.password=p1.trim();}
+  persist();
+  showToast('⏳ Kaydediliyor...');
+  fbSet(D).then(()=>showToast('✓ Kaydedildi — tüm cihazlarda güncellendi')).catch(()=>showToast('⚠ Bağlantı hatası'));
+}
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'&&document.getElementById('admin-view').classList.contains('active')){
+    e.preventDefault();saveAll();
+  }
+});
+
+function showToast(msg,dur=2600){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ── INIT ── */
+(async function init(){
+  try{
+    const s=localStorage.getItem(STORE);
+    if(s){
+      const cached=JSON.parse(s);
+      if(cached&&cached.categories){
+        D=cached;
+        Object.values(D.items||{}).forEach(arr=>arr.forEach(it=>ensureSizes(it)));
+      }
+    }
+  }catch(e){}
+  renderMenu();
+  // Fetch fresh from Firebase
+  try{
+    const cloud=await fbGet();
+    if(cloud&&cloud.categories){
+      D=Object.assign(JSON.parse(JSON.stringify(DEF)),cloud);
+      if(!D.reviews)D.reviews=[];
+      if(!D.heroImgs)D.heroImgs={};
+      Object.values(D.items||{}).forEach(arr=>arr.forEach(it=>ensureSizes(it)));
+      persist();
+      renderMenu();
+      console.log('✓ Firebase loaded');
+    }
+  }catch(e){console.warn('Firebase:',e);}
+})();
+
+// Dynamic cat-nav positioning
+function fixCatNavTop(){
+  const topBar = document.querySelector('.top-bar');
+  const catNav = document.getElementById('cat-nav');
+  if(topBar && catNav){
+    const h = topBar.getBoundingClientRect().height;
+    catNav.style.top = Math.round(h) + 'px';
+  }
+}
+fixCatNavTop();
+window.addEventListener('resize', fixCatNavTop);
+</script>
+</body>
+</html>
